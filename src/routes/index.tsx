@@ -1,24 +1,44 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import { useEffect } from "react";
 
-// No head() here: the home route inherits title/description/og/twitter from
-// __root.tsx, and ships no og:image so serve-time hosting can inject the
-// project's social preview (explicit og:image or latest screenshot).
 export const Route = createFileRoute("/")({
-  component: Index,
+  head: () => ({
+    meta: [
+      { title: "SITA — Egyptian local fashion brands in one place" },
+      {
+        name: "description",
+        content:
+          "SITA gathers Egypt's local fashion labels in one place. Search a piece once and see it across every brand.",
+      },
+      { property: "og:title", content: "SITA — Egyptian local fashion brands in one place" },
+      {
+        property: "og:description",
+        content: "Search once, shop every Egyptian local label. New arrivals updated live.",
+      },
+    ],
+  }),
+  component: Splash,
 });
 
-// IMPORTANT: Replace this placeholder. See ./README.md for routing conventions.
-function Index() {
+function Splash() {
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const t = setTimeout(() => navigate({ to: "/auth" }), 2200);
+    return () => clearTimeout(t);
+  }, [navigate]);
+
   return (
-    <div
-      className="flex min-h-screen items-center justify-center"
-      style={{ backgroundColor: "#fcfbf8" }}
-    >
-      <img
-        data-lovable-blank-page-placeholder="REMOVE_THIS"
-        src="https://cdn.gpteng.co/blank-app-v1.svg"
-        alt="Your app will live here!"
-      />
-    </div>
+    <main className="flex min-h-screen flex-col items-center justify-center bg-ink px-6">
+      <h1 className="wordmark animate-in fade-in text-ivory duration-1000 text-5xl sm:text-6xl md:text-7xl">
+        Sita
+      </h1>
+      <p className="label-caps mt-6 text-center text-ivory/50">
+        Egypt&apos;s local labels, one search
+      </p>
+      <Link to="/auth" className="label-caps mt-14 text-ivory/70 underline-offset-8 hover:underline">
+        Enter
+      </Link>
+    </main>
   );
 }
