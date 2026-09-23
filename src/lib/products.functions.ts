@@ -38,7 +38,17 @@ async function fetchBrand(
 
 export const listNewArrivals = createServerFn({ method: "GET" }).handler(async () => {
   const batches = await Promise.all(BRANDS.map((b) => fetchBrand(b, 30)));
-  const all = batches.flat();
-  all.sort((a, b) => (a.createdAt < b.createdAt ? 1 : -1));
-  return all.slice(0, 48);
+  for (const batch of batches) {
+    batch.sort((a, b) => (a.createdAt < b.createdAt ? 1 : -1));
+  }
+  // Round-robin so every brand shows up near the top of the feed.
+  const mixed: Product[] = [];
+  const longest = Math.max(0, ...batches.map((b) => b.length));
+  for (let i = 0; i < longest; i++) {
+    for (const batch of batches) {
+      const item = batch[i];
+      if (item) mixed.push(item);
+    }
+  }
+  return mixed.slice(0, 60);
 });
