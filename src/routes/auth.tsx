@@ -1,5 +1,6 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
-import { useState } from "react";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import { useEffect, useState } from "react";
+import { supabase } from "@/integrations/supabase/client";
 import heroImage from "@/assets/auth-hero.jpg";
 
 export const Route = createFileRoute("/auth")({
@@ -21,10 +22,21 @@ export const Route = createFileRoute("/auth")({
 });
 
 function AuthPage() {
+  const navigate = useNavigate();
   const [mode, setMode] = useState<"signup" | "signin">("signup");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [notice, setNotice] = useState<string | null>(null);
+  const [busy, setBusy] = useState(false);
+  const [userEmail, setUserEmail] = useState<string | null>(null);
+
+  useEffect(() => {
+    supabase.auth.getUser().then(({ data }) => setUserEmail(data.user?.email ?? null));
+    const { data: sub } = supabase.auth.onAuthStateChange((_e, session) =>
+      setUserEmail(session?.user?.email ?? null),
+    );
+    return () => sub.subscription.unsubscribe();
+  }, []);
 
   return (
     <main className="min-h-screen bg-ink md:grid md:grid-cols-2">
@@ -55,11 +67,30 @@ function AuthPage() {
 
           <form
             className="mt-10 space-y-3"
-            onSubmit={(e) => {
+            onSubmit={async (e) => {
               e.preventDefault();
-              setNotice(
-                "Accounts switch on as soon as the database is connected — your details aren't saved yet.",
-              );
+              setBusy(true);
+              setNotice(null);
+              try {
+                if (mode === "signup") {
+                  const { data, error } = await supabase.auth.signUp({
+                    email,
+                    password,
+                    options: { emailRedirectTo: `${window.location.origin}/home` },
+                  });
+                  if (error) throw error;
+                  if (data.session) navigate({ to: "/home" });
+                  else setNotice("Check your email to confirm your account, then sign in.");
+                } else {
+                  const { error } = await supabase.auth.signInWithPassword({ email, password });
+                  if (error) throw error;
+                  navigate({ to: "/home" });
+                }
+              } catch (err) {
+                setNotice(err instanceof Error ? err.message : "Something went wrong.");
+              } finally {
+                setBusy(false);
+              }
             }}
           >
             <input
@@ -81,10 +112,23 @@ function AuthPage() {
             />
             <button
               type="submit"
-              className="label-caps h-12 w-full rounded-full bg-ink text-ivory ring-1 ring-ivory/30 transition-colors hover:bg-ivory hover:text-ink"
+              disabled={busy}
+              className="label-caps h-12 w-full rounded-full bg-ink text-ivory ring-1 ring-ivory/30 transition-colors hover:bg-ivory hover:text-ink disabled:opacity-60"
             >
-              {mode === "signup" ? "Sign up" : "Sign in"}
+              {busy ? "Please wait…" : mode === "signup" ? "Sign up" : "Sign in"}
             </button>
+            {userEmail ? (
+              <p className="pt-2 text-center text-xs text-ivory/80">
+                Signed in as {userEmail} ·{" "}
+                <button
+                  type="button"
+                  className="underline underline-offset-4"
+                  onClick={() => supabase.auth.signOut()}
+                >
+                  Sign out
+                </button>
+              </p>
+            ) : null}
           </form>
 
           {notice ? (
