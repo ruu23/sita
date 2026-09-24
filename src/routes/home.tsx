@@ -1,6 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState } from "react";
-import { Menu, ShoppingBag, Search, X } from "lucide-react";
+import { Heart, Menu, ShoppingBag, Search, X } from "lucide-react";
 import { listNewArrivals } from "@/lib/products.functions";
 import { BRANDS, type Product } from "@/lib/brands";
 import { ProductCard } from "@/components/ProductCard";
@@ -123,7 +123,15 @@ function HomePage() {
             Sita
           </Link>
 
-          <ShoppingBag className="h-5 w-5 justify-self-end" strokeWidth={1.4} />
+          <div className="flex items-center gap-5 justify-self-end">
+            <Link to="/search" aria-label="Search" className="hidden md:block">
+              <Search className="h-5 w-5" strokeWidth={1.4} />
+            </Link>
+            <Link to="/wishlist" aria-label="Wishlist" className="hidden md:block">
+              <Heart className="h-5 w-5" strokeWidth={1.4} />
+            </Link>
+            <ShoppingBag className="h-5 w-5" strokeWidth={1.4} />
+          </div>
         </div>
 
         {menuOpen ? (
