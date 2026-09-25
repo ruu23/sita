@@ -1,5 +1,5 @@
 import { Link } from "@tanstack/react-router";
-import { Heart, Search } from "lucide-react";
+import { Heart, Search, User } from "lucide-react";
 
 export function PageHeader({ title }: { title: string }) {
   return (
@@ -15,6 +15,9 @@ export function PageHeader({ title }: { title: string }) {
           </Link>
           <Link to="/wishlist" aria-label="Wishlist">
             <Heart className="h-5 w-5" strokeWidth={1.4} />
+          </Link>
+          <Link to="/me" aria-label="Profile">
+            <User className="h-5 w-5" strokeWidth={1.4} />
           </Link>
         </div>
       </div>
