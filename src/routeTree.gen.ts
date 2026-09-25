@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as HomeRouteImport } from './routes/home'
+import { Route as MeRouteImport } from './routes/me'
 import { Route as SearchRouteImport } from './routes/search'
 import { Route as WishlistRouteImport } from './routes/wishlist'
 
@@ -30,6 +31,11 @@ const HomeRoute = HomeRouteImport.update({
   path: '/home',
   getParentRoute: () => rootRouteImport,
 } as any)
+const MeRoute = MeRouteImport.update({
+  id: '/me',
+  path: '/me',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const SearchRoute = SearchRouteImport.update({
   id: '/search',
   path: '/search',
@@ -45,6 +51,7 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
   '/home': typeof HomeRoute
+  '/me': typeof MeRoute
   '/search': typeof SearchRoute
   '/wishlist': typeof WishlistRoute
 }
@@ -52,6 +59,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
   '/home': typeof HomeRoute
+  '/me': typeof MeRoute
   '/search': typeof SearchRoute
   '/wishlist': typeof WishlistRoute
 }
@@ -60,21 +68,23 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
   '/home': typeof HomeRoute
+  '/me': typeof MeRoute
   '/search': typeof SearchRoute
   '/wishlist': typeof WishlistRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/auth' | '/home' | '/search' | '/wishlist'
+  fullPaths: '/' | '/auth' | '/home' | '/me' | '/search' | '/wishlist'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/auth' | '/home' | '/search' | '/wishlist'
-  id: '__root__' | '/' | '/auth' | '/home' | '/search' | '/wishlist'
+  to: '/' | '/auth' | '/home' | '/me' | '/search' | '/wishlist'
+  id: '__root__' | '/' | '/auth' | '/home' | '/me' | '/search' | '/wishlist'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AuthRoute: typeof AuthRoute
   HomeRoute: typeof HomeRoute
+  MeRoute: typeof MeRoute
   SearchRoute: typeof SearchRoute
   WishlistRoute: typeof WishlistRoute
 }
@@ -102,6 +112,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof HomeRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/me': {
+      id: '/me'
+      path: '/me'
+      fullPath: '/me'
+      preLoaderRoute: typeof MeRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/search': {
       id: '/search'
       path: '/search'
@@ -123,6 +140,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AuthRoute: AuthRoute,
   HomeRoute: HomeRoute,
+  MeRoute: MeRoute,
   SearchRoute: SearchRoute,
   WishlistRoute: WishlistRoute,
 }
