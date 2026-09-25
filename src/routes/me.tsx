@@ -77,7 +77,7 @@ function MePage() {
 
   function SignedIn({ user, wishlistCount }: { user: User; wishlistCount: number }) {
     const [name, setName] = useState<string>(
-      (user.user_metadata?.full_name as string | undefined) ?? "",
+      (user.user_metadata?.["full_name"] as string | undefined) ?? "",
     );
     const [editing, setEditing] = useState(false);
     const [draft, setDraft] = useState(name);
@@ -101,7 +101,7 @@ function MePage() {
         setNotice(error.message);
         return;
       }
-      setName((data.user?.user_metadata?.full_name as string | undefined) ?? "");
+      setName((data.user?.user_metadata?.["full_name"] as string | undefined) ?? "");
       setEditing(false);
     }
 
