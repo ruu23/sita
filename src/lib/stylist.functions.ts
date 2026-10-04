@@ -1,6 +1,6 @@
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
-import { listNewArrivals } from "./products.functions";
+import { fetchCatalog } from "./products.functions";
 import type { Product } from "./brands";
 
 export type StylistResponse =
@@ -12,7 +12,7 @@ export const recommendOutfit = createServerFn({ method: "POST" })
   .handler(async ({ data }): Promise<StylistResponse> => {
     const apiKey = process.env["LOVABLE_API_KEY"];
     if (!apiKey) return { ok: false, error: "The stylist isn't set up yet." };
-    const catalog = (await listNewArrivals()) as Product[];
+    const catalog = await fetchCatalog();
     if (!catalog.length) return { ok: false, error: "Couldn't load the brands' pieces. Try again shortly." };
     try {
       const { recommendFromCatalog } = await import("./stylist.server");

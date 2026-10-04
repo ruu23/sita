@@ -36,7 +36,7 @@ async function fetchBrand(
   }
 }
 
-export const listNewArrivals = createServerFn({ method: "GET" }).handler(async () => {
+export async function fetchCatalog(): Promise<Product[]> {
   const batches = await Promise.all(BRANDS.map((b) => fetchBrand(b, 30)));
   for (const batch of batches) {
     batch.sort((a, b) => (a.createdAt < b.createdAt ? 1 : -1));
@@ -51,4 +51,6 @@ export const listNewArrivals = createServerFn({ method: "GET" }).handler(async (
     }
   }
   return mixed.slice(0, 60);
-});
+}
+
+export const listNewArrivals = createServerFn({ method: "GET" }).handler(() => fetchCatalog());
