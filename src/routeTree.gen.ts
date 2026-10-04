@@ -14,6 +14,7 @@ import { Route as AuthRouteImport } from './routes/auth'
 import { Route as HomeRouteImport } from './routes/home'
 import { Route as MeRouteImport } from './routes/me'
 import { Route as SearchRouteImport } from './routes/search'
+import { Route as StylistRouteImport } from './routes/stylist'
 import { Route as WishlistRouteImport } from './routes/wishlist'
 
 const IndexRoute = IndexRouteImport.update({
@@ -41,6 +42,11 @@ const SearchRoute = SearchRouteImport.update({
   path: '/search',
   getParentRoute: () => rootRouteImport,
 } as any)
+const StylistRoute = StylistRouteImport.update({
+  id: '/stylist',
+  path: '/stylist',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const WishlistRoute = WishlistRouteImport.update({
   id: '/wishlist',
   path: '/wishlist',
@@ -53,6 +59,7 @@ export interface FileRoutesByFullPath {
   '/home': typeof HomeRoute
   '/me': typeof MeRoute
   '/search': typeof SearchRoute
+  '/stylist': typeof StylistRoute
   '/wishlist': typeof WishlistRoute
 }
 export interface FileRoutesByTo {
@@ -61,6 +68,7 @@ export interface FileRoutesByTo {
   '/home': typeof HomeRoute
   '/me': typeof MeRoute
   '/search': typeof SearchRoute
+  '/stylist': typeof StylistRoute
   '/wishlist': typeof WishlistRoute
 }
 export interface FileRoutesById {
@@ -70,14 +78,24 @@ export interface FileRoutesById {
   '/home': typeof HomeRoute
   '/me': typeof MeRoute
   '/search': typeof SearchRoute
+  '/stylist': typeof StylistRoute
   '/wishlist': typeof WishlistRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/auth' | '/home' | '/me' | '/search' | '/wishlist'
+  fullPaths:
+    '/' | '/auth' | '/home' | '/me' | '/search' | '/stylist' | '/wishlist'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/auth' | '/home' | '/me' | '/search' | '/wishlist'
-  id: '__root__' | '/' | '/auth' | '/home' | '/me' | '/search' | '/wishlist'
+  to: '/' | '/auth' | '/home' | '/me' | '/search' | '/stylist' | '/wishlist'
+  id:
+    | '__root__'
+    | '/'
+    | '/auth'
+    | '/home'
+    | '/me'
+    | '/search'
+    | '/stylist'
+    | '/wishlist'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -86,6 +104,7 @@ export interface RootRouteChildren {
   HomeRoute: typeof HomeRoute
   MeRoute: typeof MeRoute
   SearchRoute: typeof SearchRoute
+  StylistRoute: typeof StylistRoute
   WishlistRoute: typeof WishlistRoute
 }
 
@@ -126,6 +145,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SearchRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/stylist': {
+      id: '/stylist'
+      path: '/stylist'
+      fullPath: '/stylist'
+      preLoaderRoute: typeof StylistRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/wishlist': {
       id: '/wishlist'
       path: '/wishlist'
@@ -142,6 +168,7 @@ const rootRouteChildren: RootRouteChildren = {
   HomeRoute: HomeRoute,
   MeRoute: MeRoute,
   SearchRoute: SearchRoute,
+  StylistRoute: StylistRoute,
   WishlistRoute: WishlistRoute,
 }
 export const routeTree = rootRouteImport

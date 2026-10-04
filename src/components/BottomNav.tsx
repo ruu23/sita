@@ -1,9 +1,10 @@
 import { Link } from "@tanstack/react-router";
-import { Home, Search, Heart, User } from "lucide-react";
+import { Home, Search, Sparkles, Heart, User } from "lucide-react";
 
 const items = [
   { label: "Home", icon: Home, to: "/home" },
   { label: "Search", icon: Search, to: "/search" },
+  { label: "Stylist", icon: Sparkles, to: "/stylist" },
   { label: "Wishlist", icon: Heart, to: "/wishlist" },
   { label: "Me", icon: User, to: "/me" },
 ] as const;
@@ -11,7 +12,7 @@ const items = [
 export function BottomNav({ active = "Home" }: { active?: string }) {
   return (
     <nav className="fixed inset-x-0 bottom-0 z-40 border-t border-border bg-card/95 backdrop-blur md:hidden">
-      <ul className="mx-auto grid max-w-lg grid-cols-4">
+      <ul className="mx-auto grid max-w-lg grid-cols-5">
         {items.map(({ label, icon: Icon, to }) => (
           <li key={label}>
             <Link
