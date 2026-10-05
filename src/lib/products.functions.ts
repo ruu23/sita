@@ -1,4 +1,5 @@
 import { createServerFn } from "@tanstack/react-start";
+import { z } from "zod";
 import { BRANDS, type Product } from "./brands";
 
 type ShopifyProduct = {
@@ -14,9 +15,11 @@ type ShopifyProduct = {
 async function fetchBrand(
   brand: (typeof BRANDS)[number],
   limit: number,
+  collection?: string,
 ): Promise<Product[]> {
   try {
-    const res = await fetch(`${brand.site}/products.json?limit=${limit}`, {
+    const path = collection ? `/collections/${encodeURIComponent(collection)}` : "";
+    const res = await fetch(`${brand.site}${path}/products.json?limit=${limit}`, {
       headers: { accept: "application/json", "user-agent": "Mozilla/5.0 SitaBot" },
     });
     if (!res.ok) return [];
@@ -54,3 +57,14 @@ export async function fetchCatalog(): Promise<Product[]> {
 }
 
 export const listNewArrivals = createServerFn({ method: "GET" }).handler(() => fetchCatalog());
+
+export const listBrandProducts = createServerFn({ method: "GET" })
+  .inputValidator((d) =>
+    z.object({ slug: z.string(), collection: z.string().max(100).optional() }).parse(d),
+  )
+  .handler(async ({ data }) => {
+    const brand = BRANDS.find((b) => b.slug === data.slug);
+    if (!brand) return [];
+    const items = await fetchBrand(brand, 60, data.collection);
+    return items.sort((a, b) => (a.createdAt < b.createdAt ? 1 : -1));
+  });

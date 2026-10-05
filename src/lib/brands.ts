@@ -1,21 +1,107 @@
+export type BrandCollection = { handle: string; title: string };
+export type BrandSocial = { label: string; url: string };
+
 export type Brand = {
   slug: string;
   name: string;
   domain: string;
   site: string;
+  tagline: string;
+  story: string[];
+  collections: BrandCollection[];
+  socials: BrandSocial[];
 };
 
 export const BRANDS: Brand[] = [
-  { slug: "naseeji", name: "Naseeji", domain: "naseeji.shop", site: "https://naseeji.shop" },
-  { slug: "roaia", name: "Roaia Studio", domain: "roaiastudio.com", site: "https://roaiastudio.com" },
+  {
+    slug: "naseeji",
+    name: "Naseeji",
+    domain: "naseeji.shop",
+    site: "https://naseeji.shop",
+    tagline: "Easy, draped pieces for everyday Cairo.",
+    story: [
+      "Naseeji — from the Arabic for “my fabric” — designs relaxed, flowing pieces built around comfort and modest silhouettes.",
+      "Think coordinated sets, kimonos and kaftans, and soft tops made to layer through Egyptian summers and mild winters.",
+    ],
+    collections: [
+      { handle: "summer-26", title: "Summer Drop 0.2" },
+      { handle: "sets", title: "Sets" },
+      { handle: "kimonos-kaftans", title: "Kimonos & Kaftans" },
+      { handle: "tops-kimonos", title: "Tops & Shirts" },
+      { handle: "bottoms", title: "Bottoms" },
+      { handle: "denim", title: "Denim" },
+    ],
+    socials: [{ label: "Website", url: "https://naseeji.shop" }],
+  },
+  {
+    slug: "roaia",
+    name: "Roaia Studio",
+    domain: "roaiastudio.com",
+    site: "https://roaiastudio.com",
+    tagline: "Linen, kimonos and quiet layers.",
+    story: [
+      "Roaia — “vision” in Arabic — is a studio known for breathable linen, statement kimonos and considered layering.",
+      "Its collections move from airy summer linen to soft cardigans and coats for the cooler months, finished with bags and accessories.",
+    ],
+    collections: [
+      { handle: "new-arrivals", title: "New Arrivals" },
+      { handle: "linen-lovers", title: "Linen Lovers" },
+      { handle: "kimonos", title: "Kimonos" },
+      { handle: "sets", title: "Sets" },
+      { handle: "coats", title: "F/W Coats" },
+      { handle: "accessories", title: "Accessories" },
+    ],
+    socials: [{ label: "Website", url: "https://roaiastudio.com" }],
+  },
   {
     slug: "frenchee",
     name: "Frenchee The Label",
     domain: "frencheethelabel.com",
     site: "https://frencheethelabel.com",
+    tagline: "Denim and easy linen with a French accent.",
+    story: [
+      "Frenchee The Label brings a relaxed, Parisian-inspired attitude to everyday dressing.",
+      "The label focuses on denim cuts, comfy sets and linen pieces that work from morning coffee to evening plans.",
+    ],
+    collections: [
+      { handle: "new-collection", title: "New Collection" },
+      { handle: "summer-collection", title: "Summer Collection" },
+      { handle: "denim", title: "Pants" },
+      { handle: "demi-cercle-tops", title: "Tops" },
+      { handle: "jackets-1", title: "Jackets" },
+      { handle: "sets", title: "Sets" },
+    ],
+    socials: [{ label: "Website", url: "https://frencheethelabel.com" }],
   },
-  { slug: "tgs", name: "TGS", domain: "eg.tgsworldwide.com", site: "https://eg.tgsworldwide.com" },
+  {
+    slug: "tgs",
+    name: "TGS",
+    domain: "eg.tgsworldwide.com",
+    site: "https://eg.tgsworldwide.com",
+    tagline: "Trend-led footwear and wardrobe staples.",
+    story: [
+      "TGS Worldwide has been a leading footwear innovator in Egypt and the Middle East, offering fashionable, high-quality shoes while staying accessible.",
+      "Today it carries hundreds of styles and colours — from heels and flats to bags, basics and athleisure — to fit into any wardrobe.",
+    ],
+    collections: [
+      { handle: "footwear", title: "Footwear" },
+      { handle: "heels", title: "Heels" },
+      { handle: "flats", title: "Flats" },
+      { handle: "bags", title: "Bags" },
+      { handle: "basics-women", title: "Basics — Women" },
+      { handle: "athleisurewomen", title: "Athleisure" },
+    ],
+    socials: [
+      { label: "Instagram", url: "https://www.instagram.com/tgs_worldwide" },
+      { label: "Facebook", url: "https://www.facebook.com/tgsworldwide.me" },
+      { label: "Website", url: "https://eg.tgsworldwide.com" },
+    ],
+  },
 ];
+
+export function getBrand(slug: string) {
+  return BRANDS.find((b) => b.slug === slug);
+}
 
 export type Product = {
   id: string;

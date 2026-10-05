@@ -199,6 +199,23 @@ function HomePage() {
         )}
       </section>
 
+      <section className="border-t border-border bg-secondary px-4 py-12 sm:px-6">
+        <h2 className="text-center text-2xl tracking-[0.18em] uppercase sm:text-3xl">Meet the brands</h2>
+        <div className="mx-auto mt-8 grid max-w-5xl grid-cols-2 gap-3 md:grid-cols-4">
+          {BRANDS.map((b) => (
+            <Link
+              key={b.slug}
+              to="/brands/$slug"
+              params={{ slug: b.slug }}
+              className="flex flex-col justify-between gap-4 border border-border bg-card p-5 hover:border-foreground"
+            >
+              <span className="wordmark text-lg">{b.name}</span>
+              <span className="text-xs text-muted-foreground">{b.tagline}</span>
+            </Link>
+          ))}
+        </div>
+      </section>
+
       <footer className="hidden border-t border-border py-10 text-center md:block">
         <p className="wordmark text-lg">Sita</p>
         <p className="mt-3 text-xs text-muted-foreground">
