@@ -9,7 +9,10 @@ export function PageHeader({ title }: { title: string }) {
         <Link to="/home" className="wordmark justify-self-center text-xl sm:text-2xl">
           Sita
         </Link>
-        <div className="hidden justify-self-end gap-5 md:flex">
+        <div className="hidden items-center justify-self-end gap-5 md:flex">
+          <Link to="/brands" className="label-caps">
+            Brands
+          </Link>
           <Link to="/search" aria-label="Search">
             <Search className="h-5 w-5" strokeWidth={1.4} />
           </Link>
