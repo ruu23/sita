@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState } from "react";
 import { Search } from "lucide-react";
 import { listNewArrivals } from "@/lib/products.functions";
@@ -61,6 +61,18 @@ function SearchPage() {
             </button>
           ))}
         </div>
+        {brand ? (
+          <div className="mt-4 text-center">
+            <Link
+              to="/brands/$slug"
+              params={{ slug: brand }}
+              className="label-caps text-espresso underline underline-offset-4"
+            >
+              View {BRANDS.find((b) => b.slug === brand)?.name} page
+            </Link>
+          </div>
+        ) : null}
+
         <p className="mt-8 mb-6 text-center text-xs text-muted-foreground">
           {results.length} {results.length === 1 ? "piece" : "pieces"}
         </p>
