@@ -68,3 +68,26 @@ export const listBrandProducts = createServerFn({ method: "GET" })
     const items = await fetchBrand(brand, 60, data.collection);
     return items.sort((a, b) => (a.createdAt < b.createdAt ? 1 : -1));
   });
+
+// One recent piece from each of the brand's first collections, so the
+// featured row represents the label rather than a single drop.
+export const listFeaturedProducts = createServerFn({ method: "GET" })
+  .inputValidator((d) => z.object({ slug: z.string() }).parse(d))
+  .handler(async ({ data }) => {
+    const brand = BRANDS.find((b) => b.slug === data.slug);
+    if (!brand) return [];
+    const batches = await Promise.all(
+      brand.collections.slice(0, 4).map((c) => fetchBrand(brand, 8, c.handle)),
+    );
+    const picked: Product[] = [];
+    const seen = new Set<string>();
+    for (const batch of batches) {
+      batch.sort((a, b) => (a.createdAt < b.createdAt ? 1 : -1));
+      const item = batch.find((p) => p.image && !seen.has(p.id));
+      if (item) {
+        seen.add(item.id);
+        picked.push(item);
+      }
+    }
+    return picked.slice(0, 4);
+  });
