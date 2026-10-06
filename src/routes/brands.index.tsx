@@ -29,8 +29,18 @@ function BrandsPage() {
         <ul className="mt-10 divide-y divide-border border-y border-border">
           {BRANDS.map((b) => (
             <li key={b.slug}>
-              <Link to="/brands/$slug" params={{ slug: b.slug }} className="group flex flex-col gap-2 py-8 sm:flex-row sm:items-baseline sm:justify-between">
-                <span className="wordmark text-2xl sm:text-3xl group-hover:text-espresso">{b.name}</span>
+              <Link
+                to="/brands/$slug"
+                params={{ slug: b.slug }}
+                className="group flex flex-col gap-4 py-8 sm:flex-row sm:items-center sm:gap-8"
+              >
+                <img
+                  src={b.logo}
+                  alt={`${b.name} logo`}
+                  loading="lazy"
+                  className="h-8 w-auto max-w-[140px] shrink-0 object-contain mix-blend-multiply"
+                />
+                <span className="wordmark text-2xl group-hover:text-espresso sm:text-3xl">{b.name}</span>
                 <span className="text-sm text-muted-foreground">{b.tagline}</span>
               </Link>
             </li>

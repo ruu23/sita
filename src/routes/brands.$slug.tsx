@@ -1,11 +1,12 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { z } from "zod";
-import { ArrowUpRight } from "lucide-react";
+import { ArrowLeft, ArrowUpRight } from "lucide-react";
 import { getBrand } from "@/lib/brands";
-import { listBrandProducts } from "@/lib/products.functions";
+import { listBrandProducts, listFeaturedProducts } from "@/lib/products.functions";
 import { ProductCard } from "@/components/ProductCard";
 import { BottomNav } from "@/components/BottomNav";
 import { PageHeader } from "@/components/PageHeader";
+import { Breadcrumbs } from "@/components/Breadcrumbs";
 
 export const Route = createFileRoute("/brands/$slug")({
   validateSearch: z.object({ collection: z.string().optional() }),
@@ -13,8 +14,13 @@ export const Route = createFileRoute("/brands/$slug")({
   loader: async ({ params, deps }) => {
     const brand = getBrand(params.slug);
     if (!brand) throw notFound();
-    const products = await listBrandProducts({ data: { slug: brand.slug, collection: deps.collection } });
-    return { slug: brand.slug, products };
+    const [products, featured] = await Promise.all([
+      listBrandProducts({ data: { slug: brand.slug, collection: deps.collection } }),
+      deps.collection
+        ? Promise.resolve([])
+        : listFeaturedProducts({ data: { slug: brand.slug } }),
+    ]);
+    return { slug: brand.slug, products, featured };
   },
   head: ({ params }) => {
     const brand = getBrand(params.slug);
@@ -43,7 +49,7 @@ export const Route = createFileRoute("/brands/$slug")({
 });
 
 function BrandPage() {
-  const { slug, products } = Route.useLoaderData();
+  const { slug, products, featured } = Route.useLoaderData();
   const { collection } = Route.useSearch();
   const brand = getBrand(slug)!;
   const prices = products.map((p) => Number(p.price)).filter((n) => n > 0);
@@ -52,11 +58,38 @@ function BrandPage() {
   return (
     <div className="min-h-screen pb-24 md:pb-10">
       <PageHeader title="Brands" />
+      <Breadcrumbs
+        items={[
+          { label: "Home", to: "/home" },
+          { label: "Brands", to: "/brands" },
+          { label: brand.name },
+        ]}
+      />
       <section className="bg-ink px-4 py-14 text-center text-ivory sm:py-20">
         <p className="label-caps opacity-70">Egyptian local label</p>
         <h1 className="wordmark mt-4 text-4xl sm:text-6xl">{brand.name}</h1>
         <p className="mx-auto mt-4 max-w-xl font-display text-xl italic opacity-90">{brand.tagline}</p>
+        <p className="mx-auto mt-5 max-w-2xl text-sm leading-relaxed opacity-80 sm:text-base">
+          {brand.description}
+        </p>
       </section>
+
+      <div className="border-b border-border">
+        <div className="mx-auto flex max-w-7xl flex-col items-center gap-6 px-4 py-8 sm:flex-row sm:justify-between sm:px-6">
+          <img
+            src={brand.logo}
+            alt={`${brand.name} logo`}
+            className="h-12 w-auto max-w-[240px] object-contain mix-blend-multiply sm:h-14"
+          />
+          <Link
+            to="/brands"
+            className="label-caps inline-flex items-center gap-2 text-espresso underline-offset-4 hover:text-foreground hover:underline"
+          >
+            <ArrowLeft className="h-3.5 w-3.5" strokeWidth={1.6} />
+            All brands
+          </Link>
+        </div>
+      </div>
 
       <main className="mx-auto max-w-7xl px-4 sm:px-6">
         <section className="grid gap-10 border-b border-border py-12 md:grid-cols-3">
@@ -87,6 +120,21 @@ function BrandPage() {
             </div>
           </div>
         </section>
+
+        {featured.length > 0 ? (
+          <section className="border-b border-border py-12">
+            <h2 className="text-center text-2xl tracking-[0.18em] uppercase">Featured</h2>
+            <p className="mt-2 text-center text-sm text-muted-foreground">
+              A first piece from {Math.min(4, brand.collections.length)} of {brand.name}&apos;s
+              collections.
+            </p>
+            <div className="mt-8 grid grid-cols-2 gap-x-3 gap-y-8 sm:grid-cols-4 lg:gap-x-6">
+              {featured.map((p) => (
+                <ProductCard key={p.id} product={p} />
+              ))}
+            </div>
+          </section>
+        ) : null}
 
         <section className="py-10">
           <h2 className="text-center text-2xl tracking-[0.18em] uppercase">Collections</h2>
@@ -124,6 +172,16 @@ function BrandPage() {
             </div>
           )}
         </section>
+
+        <div className="border-t border-border py-12 text-center">
+          <p className="label-caps text-muted-foreground">Seen. Discovered. Chosen.</p>
+          <Link
+            to="/brands"
+            className="label-caps mt-4 inline-block border border-foreground px-8 py-3 text-foreground transition-colors hover:bg-foreground hover:text-background"
+          >
+            Browse all brands
+          </Link>
+        </div>
       </main>
       <BottomNav active="Home" />
     </div>
