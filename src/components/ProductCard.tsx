@@ -1,4 +1,5 @@
 import { Heart } from "lucide-react";
+import { Link } from "@tanstack/react-router";
 import type { Product } from "@/lib/brands";
 import { toggleWishlist, useWishlist } from "@/lib/wishlist";
 
@@ -30,16 +31,24 @@ export function ProductCard({ product }: { product: Product }) {
             />
           ) : null}
         </div>
-        <div className="px-3 py-3">
-          <p className="label-caps text-muted-foreground">{product.brand}</p>
+      </a>
+      <div className="px-3 py-3">
+        <Link
+          to="/brands/$slug"
+          params={{ slug: product.brandSlug }}
+          className="label-caps text-muted-foreground underline-offset-4 hover:text-foreground hover:underline"
+        >
+          {product.brand}
+        </Link>
+        <a href={product.url} target="_blank" rel="noreferrer" className="block">
           <p className="mt-1 line-clamp-2 text-sm leading-snug">{product.title}</p>
           {product.price ? (
             <p className="mt-1 text-sm text-espresso">
               {Math.round(Number(product.price))} EGP
             </p>
           ) : null}
-        </div>
-      </a>
+        </a>
+      </div>
     </div>
   );
 }

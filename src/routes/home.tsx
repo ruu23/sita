@@ -186,6 +186,19 @@ function HomePage() {
           />
         </div>
 
+        {brand ? (
+          <div className="pb-8 text-center">
+            <Link
+              to="/brands/$slug"
+              params={{ slug: brand }}
+              className="label-caps text-espresso underline underline-offset-4"
+            >
+              View {BRANDS.find((b) => b.slug === brand)?.name} page
+            </Link>
+          </div>
+        ) : null}
+
+
         {filtered.length === 0 ? (
           <p className="py-16 text-center text-sm text-muted-foreground">
             No pieces match “{query}” yet.
