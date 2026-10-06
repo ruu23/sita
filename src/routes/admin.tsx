@@ -1,4 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
+import { useState } from "react";
 import { useServerFn } from "@tanstack/react-start";
 import { useQuery } from "@tanstack/react-query";
 import { getAdminOverview } from "@/lib/admin.functions";
@@ -26,6 +27,18 @@ function AdminPage() {
   const fetchOverview = useServerFn(getAdminOverview);
   const { data, isLoading, error } = useQuery({ queryKey: ["admin"], queryFn: () => fetchOverview(), retry: false });
 
+  const [bq, setBq] = useState("");
+  const [bStatus, setBStatus] = useState("all");
+  const [uq, setUq] = useState("");
+  const [uStatus, setUStatus] = useState("all");
+  const brands = (data?.brands ?? []).filter((b) =>
+    (`${b.name} ${b.site}`.toLowerCase().includes(bq.trim().toLowerCase())) &&
+    (bStatus === "all" || (bStatus === "online" ? b.online : !b.online)));
+  const users = (data?.users ?? []).filter((u) =>
+    (`${u.email ?? ""} ${u.name ?? ""}`.toLowerCase().includes(uq.trim().toLowerCase())) &&
+    (uStatus === "all" || (uStatus === "confirmed" ? u.confirmed : uStatus === "pending" ? !u.confirmed : u.admin)));
+  const inputCls = "h-10 border border-border bg-card px-3 text-sm outline-none focus:border-foreground";
+
   return (
     <div className="min-h-screen pb-10">
       <PageHeader title="Admin" />
@@ -47,13 +60,20 @@ function AdminPage() {
             </div>
 
             <h2 className="mt-12 text-2xl tracking-[0.18em] uppercase">Brands</h2>
+            <div className="mt-4 flex flex-wrap gap-2">
+              <input value={bq} onChange={(e) => setBq(e.target.value)} placeholder="Search brands…" className={`${inputCls} min-w-0 flex-1 sm:max-w-xs`} />
+              <select value={bStatus} onChange={(e) => setBStatus(e.target.value)} className={inputCls}>
+                <option value="all">All statuses</option><option value="online">Online</option><option value="offline">Unreachable</option>
+              </select>
+              <span className="self-center text-xs text-muted-foreground">{brands.length} of {data.brands.length}</span>
+            </div>
             <div className="mt-4 overflow-x-auto border border-border bg-card">
               <table className="w-full text-left text-sm">
                 <thead className="label-caps text-muted-foreground">
                   <tr><th className="p-3">Brand</th><th className="p-3">Store</th><th className="p-3">Pieces</th><th className="p-3">Collections</th><th className="p-3">Status</th></tr>
                 </thead>
                 <tbody>
-                  {data.brands.map((b) => (
+                  {brands.map((b) => (
                     <tr key={b.slug} className="border-t border-border">
                       <td className="p-3"><Link to="/brands/$slug" params={{ slug: b.slug }} className="hover:underline">{b.name}</Link></td>
                       <td className="p-3"><a href={b.site} target="_blank" rel="noreferrer" className="text-muted-foreground hover:underline">{b.site.replace("https://", "")}</a></td>
@@ -67,13 +87,20 @@ function AdminPage() {
             </div>
 
             <h2 className="mt-12 text-2xl tracking-[0.18em] uppercase">Shoppers</h2>
+            <div className="mt-4 flex flex-wrap gap-2">
+              <input value={uq} onChange={(e) => setUq(e.target.value)} placeholder="Search by email or name…" className={`${inputCls} min-w-0 flex-1 sm:max-w-xs`} />
+              <select value={uStatus} onChange={(e) => setUStatus(e.target.value)} className={inputCls}>
+                <option value="all">All shoppers</option><option value="confirmed">Confirmed</option><option value="pending">Awaiting email</option><option value="admin">Admins</option>
+              </select>
+              <span className="self-center text-xs text-muted-foreground">{users.length} of {data.users.length}</span>
+            </div>
             <div className="mt-4 overflow-x-auto border border-border bg-card">
               <table className="w-full text-left text-sm">
                 <thead className="label-caps text-muted-foreground">
                   <tr><th className="p-3">Email</th><th className="p-3">Name</th><th className="p-3">Joined</th><th className="p-3">Last sign-in</th><th className="p-3">Status</th></tr>
                 </thead>
                 <tbody>
-                  {data.users.map((u) => (
+                  {users.map((u) => (
                     <tr key={u.id} className="border-t border-border">
                       <td className="p-3">{u.email}{u.admin && <span className="label-caps ml-2 text-espresso">Admin</span>}</td>
                       <td className="p-3">{u.name || "—"}</td>
