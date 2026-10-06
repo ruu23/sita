@@ -53,11 +53,30 @@ function BrandPage() {
   return (
     <div className="min-h-screen pb-24 md:pb-10">
       <PageHeader title="Brands" />
+      <Breadcrumbs
+        items={[
+          { label: "Home", to: "/home" },
+          { label: "Brands", to: "/brands" },
+          { label: brand.name },
+        ]}
+      />
       <section className="bg-ink px-4 py-14 text-center text-ivory sm:py-20">
         <p className="label-caps opacity-70">Egyptian local label</p>
         <h1 className="wordmark mt-4 text-4xl sm:text-6xl">{brand.name}</h1>
         <p className="mx-auto mt-4 max-w-xl font-display text-xl italic opacity-90">{brand.tagline}</p>
       </section>
+
+      <div className="border-b border-border">
+        <div className="mx-auto max-w-7xl px-4 py-4 sm:px-6">
+          <Link
+            to="/brands"
+            className="label-caps inline-flex items-center gap-2 text-espresso underline-offset-4 hover:text-foreground hover:underline"
+          >
+            <ArrowLeft className="h-3.5 w-3.5" strokeWidth={1.6} />
+            All brands
+          </Link>
+        </div>
+      </div>
 
       <main className="mx-auto max-w-7xl px-4 sm:px-6">
         <section className="grid gap-10 border-b border-border py-12 md:grid-cols-3">
@@ -125,6 +144,16 @@ function BrandPage() {
             </div>
           )}
         </section>
+
+        <div className="border-t border-border py-12 text-center">
+          <p className="label-caps text-muted-foreground">Seen. Discovered. Chosen.</p>
+          <Link
+            to="/brands"
+            className="label-caps mt-4 inline-block border border-foreground px-8 py-3 text-foreground transition-colors hover:bg-foreground hover:text-background"
+          >
+            Browse all brands
+          </Link>
+        </div>
       </main>
       <BottomNav active="Home" />
     </div>
