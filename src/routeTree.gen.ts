@@ -19,7 +19,6 @@ import { Route as StylistRouteImport } from './routes/stylist'
 import { Route as WishlistRouteImport } from './routes/wishlist'
 import { Route as BrandsIndexRouteImport } from './routes/brands.index'
 import { Route as BrandsSlugRouteImport } from './routes/brands.$slug'
-import { Route as ApiPublicTmpMakeAdminRouteImport } from './routes/api/public/tmp-make-admin'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -71,11 +70,6 @@ const BrandsSlugRoute = BrandsSlugRouteImport.update({
   path: '/brands/$slug',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ApiPublicTmpMakeAdminRoute = ApiPublicTmpMakeAdminRouteImport.update({
-  id: '/api/public/tmp-make-admin',
-  path: '/api/public/tmp-make-admin',
-  getParentRoute: () => rootRouteImport,
-} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -88,7 +82,6 @@ export interface FileRoutesByFullPath {
   '/wishlist': typeof WishlistRoute
   '/brands/$slug': typeof BrandsSlugRoute
   '/brands/': typeof BrandsIndexRoute
-  '/api/public/tmp-make-admin': typeof ApiPublicTmpMakeAdminRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -101,7 +94,6 @@ export interface FileRoutesByTo {
   '/wishlist': typeof WishlistRoute
   '/brands/$slug': typeof BrandsSlugRoute
   '/brands': typeof BrandsIndexRoute
-  '/api/public/tmp-make-admin': typeof ApiPublicTmpMakeAdminRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -115,7 +107,6 @@ export interface FileRoutesById {
   '/wishlist': typeof WishlistRoute
   '/brands/$slug': typeof BrandsSlugRoute
   '/brands/': typeof BrandsIndexRoute
-  '/api/public/tmp-make-admin': typeof ApiPublicTmpMakeAdminRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -130,7 +121,6 @@ export interface FileRouteTypes {
     | '/wishlist'
     | '/brands/$slug'
     | '/brands/'
-    | '/api/public/tmp-make-admin'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -143,7 +133,6 @@ export interface FileRouteTypes {
     | '/wishlist'
     | '/brands/$slug'
     | '/brands'
-    | '/api/public/tmp-make-admin'
   id:
     | '__root__'
     | '/'
@@ -156,7 +145,6 @@ export interface FileRouteTypes {
     | '/wishlist'
     | '/brands/$slug'
     | '/brands/'
-    | '/api/public/tmp-make-admin'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -170,7 +158,6 @@ export interface RootRouteChildren {
   WishlistRoute: typeof WishlistRoute
   BrandsSlugRoute: typeof BrandsSlugRoute
   BrandsIndexRoute: typeof BrandsIndexRoute
-  ApiPublicTmpMakeAdminRoute: typeof ApiPublicTmpMakeAdminRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -245,13 +232,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof BrandsSlugRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/api/public/tmp-make-admin': {
-      id: '/api/public/tmp-make-admin'
-      path: '/api/public/tmp-make-admin'
-      fullPath: '/api/public/tmp-make-admin'
-      preLoaderRoute: typeof ApiPublicTmpMakeAdminRouteImport
-      parentRoute: typeof rootRouteImport
-    }
   }
 }
 
@@ -266,7 +246,6 @@ const rootRouteChildren: RootRouteChildren = {
   WishlistRoute: WishlistRoute,
   BrandsSlugRoute: BrandsSlugRoute,
   BrandsIndexRoute: BrandsIndexRoute,
-  ApiPublicTmpMakeAdminRoute: ApiPublicTmpMakeAdminRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
