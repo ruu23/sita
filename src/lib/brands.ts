@@ -92,7 +92,7 @@ export const BRANDS: Brand[] = [
     tagline: "Trend-led footwear and wardrobe staples.",
     description:
       "TGS Worldwide is an Egyptian footwear house — heels, flats, bags, basics and athleisure in hundreds of styles and colours, made to slip into any wardrobe.",
-    logo: "https://eg.tgsworldwide.com/cdn/shop/files/logowhitebg.jpg?v=1777381922",
+    logo: "https://eg.tgsworldwide.com/cdn/shop/files/logowhitebg.jpg?v=1777381922&width=800&height=220&crop=center",
     story: [
       "TGS Worldwide has been a leading footwear innovator in Egypt and the Middle East, offering fashionable, high-quality shoes while staying accessible.",
       "Today it carries hundreds of styles and colours — from heels and flats to bags, basics and athleisure — to fit into any wardrobe.",
