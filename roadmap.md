@@ -4,6 +4,6 @@
 - [x] Brand pages (story, collections, products, prices, socials)
 - [x] Admin page: view users and brands
 - [ ] Other presentation gaps (compare, styles, join SITA, contact) — waiting on user
-- [ ] Brand pages: breadcrumbs + clear link back to all brands
-- [ ] Brand pages: description, logo, featured pieces
+- [x] Brand pages: breadcrumbs + clear link back to all brands
+- [x] Brand pages: description, logo, featured pieces
 - [x] Create admin account and verify /admin
