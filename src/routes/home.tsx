@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { Heart, Menu, ShoppingBag, Search, X } from "lucide-react";
 import { listNewArrivals } from "@/lib/products.functions";
 import { BRANDS, type Product } from "@/lib/brands";
@@ -39,31 +39,58 @@ export const Route = createFileRoute("/home")({
 });
 
 function Carousel({ items }: { items: Product[] }) {
+  const trackRef = useRef<HTMLDivElement>(null);
   const [i, setI] = useState(0);
   if (items.length === 0) return null;
-  const current = items[Math.min(i, items.length - 1)]!;
+
+  const goTo = (idx: number) => {
+    const track = trackRef.current;
+    if (!track) return;
+    track.scrollTo({ left: idx * track.clientWidth, behavior: "smooth" });
+  };
+
+  const onScroll = () => {
+    const track = trackRef.current;
+    if (!track) return;
+    const idx = Math.round(track.scrollLeft / track.clientWidth);
+    setI(Math.max(0, Math.min(items.length - 1, idx)));
+  };
 
   return (
-    <section className="relative bg-ink">
-      <a href={current.url} target="_blank" rel="noreferrer" className="block">
-        <div className="aspect-[4/5] w-full sm:aspect-[16/9] lg:aspect-[21/9]">
-          {current.image ? (
-            <img
-              src={current.image}
-              alt={current.title}
-              className="h-full w-full object-cover"
-            />
-          ) : null}
-        </div>
-      </a>
-      <div className="absolute inset-x-0 bottom-4 flex justify-center gap-2">
+    <section className="bg-ink">
+      <div
+        ref={trackRef}
+        onScroll={onScroll}
+        className="flex snap-x snap-mandatory overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+      >
+        {items.map((it) => (
+          <a
+            key={it.id}
+            href={it.url}
+            target="_blank"
+            rel="noreferrer"
+            className="block w-full shrink-0 snap-center"
+          >
+            <div className="aspect-[4/5] w-full sm:aspect-[16/9] lg:aspect-[21/9]">
+              {it.image ? (
+                <img
+                  src={it.image}
+                  alt={it.title}
+                  className="h-full w-full object-cover"
+                />
+              ) : null}
+            </div>
+          </a>
+        ))}
+      </div>
+      <div className="flex justify-center gap-2 py-3">
         {items.map((it, idx) => (
           <button
             key={it.id}
-            aria-label={`Slide ${idx + 1}`}
-            onClick={() => setI(idx)}
+            aria-label={`Go to slide ${idx + 1}`}
+            onClick={() => goTo(idx)}
             className={`h-1.5 w-1.5 rounded-full transition-colors ${
-              idx === Math.min(i, items.length - 1) ? "bg-ivory" : "bg-ivory/40"
+              idx === i ? "bg-ivory" : "bg-ivory/40"
             }`}
           />
         ))}
