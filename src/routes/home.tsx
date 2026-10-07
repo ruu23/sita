@@ -57,11 +57,17 @@ function Carousel({ items }: { items: Product[] }) {
   };
 
   return (
-    <section className="bg-ink">
+    <section className="relative bg-ink">
       <div
         ref={trackRef}
         onScroll={onScroll}
-        className="flex snap-x snap-mandatory overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+        tabIndex={0}
+        aria-label="Featured pieces"
+        onKeyDown={(e) => {
+          if (e.key === "ArrowRight") goTo(Math.min(items.length - 1, i + 1));
+          if (e.key === "ArrowLeft") goTo(Math.max(0, i - 1));
+        }}
+        className="flex snap-x snap-mandatory overflow-x-auto overscroll-x-contain touch-pan-x outline-none [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
       >
         {items.map((it) => (
           <a
@@ -69,20 +75,51 @@ function Carousel({ items }: { items: Product[] }) {
             href={it.url}
             target="_blank"
             rel="noreferrer"
+            draggable={false}
             className="block w-full shrink-0 snap-center"
           >
-            <div className="aspect-[4/5] w-full sm:aspect-[16/9] lg:aspect-[21/9]">
+            <div className="relative aspect-[4/5] w-full overflow-hidden sm:aspect-[4/3] lg:aspect-auto lg:h-[min(80vh,760px)]">
               {it.image ? (
-                <img
-                  src={it.image}
-                  alt={it.title}
-                  className="h-full w-full object-cover"
-                />
+                <>
+                  <img
+                    src={it.image}
+                    alt=""
+                    aria-hidden
+                    draggable={false}
+                    className="absolute inset-0 hidden h-full w-full scale-110 object-cover opacity-50 blur-2xl sm:block"
+                  />
+                  <img
+                    src={it.image}
+                    alt={it.title}
+                    draggable={false}
+                    className="relative h-full w-full object-cover sm:object-contain"
+                  />
+                </>
               ) : null}
             </div>
           </a>
         ))}
       </div>
+      {items.length > 1 && (
+        <>
+          <button
+            aria-label="Previous slide"
+            onClick={() => goTo(Math.max(0, i - 1))}
+            disabled={i === 0}
+            className="absolute left-4 top-[45%] hidden h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full bg-ink/60 text-ivory backdrop-blur transition-opacity hover:bg-ink/80 disabled:opacity-0 md:flex"
+          >
+            ‹
+          </button>
+          <button
+            aria-label="Next slide"
+            onClick={() => goTo(Math.min(items.length - 1, i + 1))}
+            disabled={i === items.length - 1}
+            className="absolute right-4 top-[45%] hidden h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full bg-ink/60 text-ivory backdrop-blur transition-opacity hover:bg-ink/80 disabled:opacity-0 md:flex"
+          >
+            ›
+          </button>
+        </>
+      )}
       <div className="flex justify-center gap-2 py-3">
         {items.map((it, idx) => (
           <button
