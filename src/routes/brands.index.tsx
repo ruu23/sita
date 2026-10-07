@@ -2,6 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { BRANDS } from "@/lib/brands";
 import { BottomNav } from "@/components/BottomNav";
 import { PageHeader } from "@/components/PageHeader";
+import { Breadcrumbs } from "@/components/Breadcrumbs";
 
 export const Route = createFileRoute("/brands/")({
   head: () => ({
@@ -21,6 +22,7 @@ function BrandsPage() {
   return (
     <div className="min-h-screen pb-24 md:pb-10">
       <PageHeader title="Brands" />
+      <Breadcrumbs items={[{ label: "Home", to: "/home" }, { label: "Brands" }]} />
       <main className="mx-auto max-w-5xl px-4 py-12 sm:px-6">
         <div className="text-center">
           <p className="label-caps text-muted-foreground">Seen. Discovered. Chosen.</p>

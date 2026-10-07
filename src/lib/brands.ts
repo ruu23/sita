@@ -46,7 +46,7 @@ export const BRANDS: Brand[] = [
     tagline: "Linen, kimonos and quiet layers.",
     description:
       "Roaia — “vision” in Arabic — is a studio built on breathable linen: airy kimonos, considered layers, and bags and accessories to finish them.",
-    logo: "https://roaiastudio.com/cdn/shop/files/Untitled_design_3.png?v=1707667894&width=400",
+    logo: "https://roaiastudio.com/cdn/shop/files/Untitled_design_3.png?v=1707667894&width=600&height=150&crop=center",
     story: [
       "Roaia — “vision” in Arabic — is a studio known for breathable linen, statement kimonos and considered layering.",
       "Its collections move from airy summer linen to soft cardigans and coats for the cooler months, finished with bags and accessories.",
