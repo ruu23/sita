@@ -78,7 +78,7 @@ function Carousel({ items }: { items: Product[] }) {
             draggable={false}
             className="block w-full shrink-0 snap-center"
           >
-            <div className="relative aspect-[4/5] w-full overflow-hidden sm:aspect-[4/3] lg:aspect-auto lg:h-[min(80vh,760px)]">
+            <div className="relative aspect-[4/5] w-full overflow-hidden bg-secondary sm:aspect-[4/3] lg:aspect-auto lg:h-[min(76vh,720px)]">
               {it.image ? (
                 <>
                   <img
@@ -86,7 +86,7 @@ function Carousel({ items }: { items: Product[] }) {
                     alt=""
                     aria-hidden
                     draggable={false}
-                    className="absolute inset-0 hidden h-full w-full scale-110 object-cover opacity-50 blur-2xl sm:block"
+                    className="absolute inset-0 hidden h-full w-full scale-110 object-cover opacity-35 blur-2xl sm:block"
                   />
                   <img
                     src={it.image}
@@ -106,7 +106,7 @@ function Carousel({ items }: { items: Product[] }) {
             aria-label="Previous slide"
             onClick={() => goTo(Math.max(0, i - 1))}
             disabled={i === 0}
-            className="absolute left-4 top-[45%] hidden h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full bg-ink/60 text-ivory backdrop-blur transition-opacity hover:bg-ink/80 disabled:opacity-0 md:flex"
+            className="absolute left-5 top-1/2 hidden h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full bg-ink/65 text-ivory backdrop-blur transition-colors hover:bg-ink/85 disabled:opacity-0 md:flex"
           >
             ‹
           </button>
@@ -114,19 +114,19 @@ function Carousel({ items }: { items: Product[] }) {
             aria-label="Next slide"
             onClick={() => goTo(Math.min(items.length - 1, i + 1))}
             disabled={i === items.length - 1}
-            className="absolute right-4 top-[45%] hidden h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full bg-ink/60 text-ivory backdrop-blur transition-opacity hover:bg-ink/80 disabled:opacity-0 md:flex"
+            className="absolute right-5 top-1/2 hidden h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full bg-ink/65 text-ivory backdrop-blur transition-colors hover:bg-ink/85 disabled:opacity-0 md:flex"
           >
             ›
           </button>
         </>
       )}
-      <div className="flex justify-center gap-2 py-3">
+      <div className="flex justify-center gap-2.5 bg-transparent py-4">
         {items.map((it, idx) => (
           <button
             key={it.id}
             aria-label={`Go to slide ${idx + 1}`}
             onClick={() => goTo(idx)}
-            className={`h-1.5 w-1.5 rounded-full transition-colors ${
+            className={`h-1.5 w-1.5 rounded-full transition-all ${
               idx === i ? "bg-foreground" : "bg-foreground/30"
             }`}
           />
@@ -151,8 +151,8 @@ function HomePage() {
 
   return (
     <div className="min-h-screen pb-20 md:pb-0">
-      <header className="sticky top-0 z-30 border-b border-border bg-background/95 backdrop-blur">
-        <div className="mx-auto grid max-w-7xl grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-4 px-4 py-4 sm:px-6">
+      <header className="sticky top-0 z-30 border-b border-border bg-background/95 backdrop-blur-xl">
+        <div className="mx-auto grid min-h-16 max-w-7xl grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-4 px-4 sm:px-6">
           <button
             onClick={() => setMenuOpen((v) => !v)}
             aria-label="Menu"
@@ -183,11 +183,11 @@ function HomePage() {
             ))}
           </nav>
 
-          <Link to="/" className="wordmark justify-self-center text-xl sm:text-2xl">
-            Sita
+          <Link to="/" className="wordmark justify-self-center text-2xl sm:text-3xl">
+            SITA
           </Link>
 
-          <div className="flex items-center gap-5 justify-self-end">
+          <div className="flex items-center justify-self-end gap-5">
             <Link to="/search" aria-label="Search" className="hidden md:block">
               <Search className="h-5 w-5" strokeWidth={1.4} />
             </Link>
@@ -230,14 +230,14 @@ function HomePage() {
       <Carousel items={products.slice(0, 3)} />
 
       <section className="mx-auto max-w-7xl px-4 sm:px-6">
-        <div className="py-8 text-center sm:py-10">
-          <h2 className="text-2xl tracking-[0.18em] uppercase sm:text-3xl">New In</h2>
-          <p className="mt-2 text-sm text-muted-foreground">
-            Discover the latest in elegance and style!
+        <div className="py-10 text-center sm:py-14">
+          <h2 className="font-display text-3xl font-bold uppercase sm:text-4xl">New In</h2>
+          <p className="mt-3 text-sm text-muted-foreground">
+            Discover the latest in elegance and style
           </p>
         </div>
 
-        <div className="relative mx-auto max-w-md pb-8">
+        <div className="relative mx-auto max-w-lg pb-10">
           <Search
             className="absolute top-1/2 left-4 h-4 w-4 -translate-y-1/2 text-muted-foreground"
             strokeWidth={1.4}
@@ -246,7 +246,7 @@ function HomePage() {
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             placeholder="Search a piece, e.g. black skirt"
-            className="h-11 w-full rounded-full border border-input bg-card pr-4 pl-11 text-sm focus:border-ring focus:outline-none"
+            className="h-12 w-full rounded-full border border-input bg-card pr-5 pl-11 text-sm outline-none transition-colors focus:border-ring"
           />
         </div>
 
@@ -268,7 +268,7 @@ function HomePage() {
             No pieces match “{query}” yet.
           </p>
         ) : (
-          <div className="grid grid-cols-2 gap-x-3 gap-y-8 pb-16 sm:grid-cols-3 lg:grid-cols-4 lg:gap-x-6">
+          <div className="grid grid-cols-2 gap-x-3 gap-y-10 pb-16 sm:grid-cols-3 sm:gap-x-5 lg:grid-cols-4 lg:gap-x-7 lg:gap-y-14">
             {filtered.map((p) => (
               <ProductCard key={p.id} product={p} />
             ))}
@@ -277,7 +277,7 @@ function HomePage() {
       </section>
 
       <section className="border-t border-border bg-secondary px-4 py-12 sm:px-6">
-        <h2 className="text-center text-2xl tracking-[0.18em] uppercase sm:text-3xl">Meet the brands</h2>
+        <h2 className="text-center font-display text-2xl font-semibold uppercase sm:text-3xl">Meet the brands</h2>
         <div className="mx-auto mt-8 grid max-w-5xl grid-cols-2 gap-3 md:grid-cols-4">
           {BRANDS.map((b) => (
             <Link
@@ -294,7 +294,7 @@ function HomePage() {
       </section>
 
       <footer className="hidden border-t border-border py-10 text-center md:block">
-        <p className="wordmark text-lg">Sita</p>
+        <p className="wordmark text-lg">SITA</p>
         <p className="mt-3 text-xs text-muted-foreground">
           Egyptian local labels, gathered in one search.
         </p>

@@ -8,12 +8,12 @@ export function ProductCard({ product }: { product: Product }) {
   const saved = wishlist.some((p) => p.id === product.id);
 
   return (
-    <div className="group relative bg-card">
+    <article className="group relative bg-card">
       <button
         type="button"
         aria-label={saved ? "Remove from wishlist" : "Add to wishlist"}
         onClick={() => toggleWishlist(product)}
-        className="absolute top-2 right-2 z-10 flex h-8 w-8 items-center justify-center rounded-full bg-background/85 backdrop-blur"
+        className="absolute top-2 right-2 z-10 flex h-9 w-9 items-center justify-center rounded-full bg-background/85 backdrop-blur transition-transform hover:scale-105"
       >
         <Heart
           className={`h-4 w-4 ${saved ? "fill-foreground text-foreground" : "text-foreground"}`}
@@ -32,7 +32,7 @@ export function ProductCard({ product }: { product: Product }) {
           ) : null}
         </div>
       </a>
-      <div className="px-3 py-3">
+      <div className="px-1 py-3 sm:px-2 sm:py-4">
         <Link
           to="/brands/$slug"
           params={{ slug: product.brandSlug }}
@@ -41,7 +41,7 @@ export function ProductCard({ product }: { product: Product }) {
           {product.brand}
         </Link>
         <a href={product.url} target="_blank" rel="noreferrer" className="block">
-          <p className="mt-1 line-clamp-2 text-sm leading-snug">{product.title}</p>
+          <p className="mt-1 line-clamp-2 text-sm leading-relaxed">{product.title}</p>
           {product.price ? (
             <p className="mt-1 text-sm text-espresso">
               {Math.round(Number(product.price))} EGP
@@ -49,6 +49,6 @@ export function ProductCard({ product }: { product: Product }) {
           ) : null}
         </a>
       </div>
-    </div>
+    </article>
   );
 }
