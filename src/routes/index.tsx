@@ -1,4 +1,4 @@
-import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect } from "react";
 
 export const Route = createFileRoute("/")({
@@ -33,12 +33,6 @@ function Splash() {
       <h1 className="wordmark animate-in fade-in text-ivory duration-1000 text-5xl sm:text-6xl md:text-7xl">
         Sita
       </h1>
-      <p className="label-caps mt-6 text-center text-ivory/50">
-        Egypt&apos;s local labels, one search
-      </p>
-      <Link to="/auth" className="label-caps mt-14 text-ivory/70 underline-offset-8 hover:underline">
-        Enter
-      </Link>
     </main>
   );
 }
