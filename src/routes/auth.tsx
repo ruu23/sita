@@ -39,34 +39,37 @@ function AuthPage() {
   }, []);
 
   return (
-    <main className="min-h-screen bg-ink md:grid md:grid-cols-2">
-      <div className="relative hidden md:block">
+    <main className="min-h-screen bg-ink md:grid md:grid-cols-[minmax(0,1.08fr)_minmax(420px,0.92fr)]">
+      <div className="relative hidden min-h-screen overflow-hidden md:block">
         <img
           src={heroImage}
           alt="Street style in neutral tones"
           width={1024}
           height={1536}
-          className="h-full w-full object-cover"
+          className="absolute inset-0 h-full w-full object-cover object-center"
         />
       </div>
 
-      <div className="relative flex min-h-screen items-center justify-center overflow-hidden px-6 py-16">
+      <div className="relative flex min-h-screen items-end justify-center overflow-hidden px-6 pb-10 pt-28 sm:px-10 sm:pb-16 md:items-center md:bg-ink md:px-12 md:py-16 lg:px-20">
         <img
           src={heroImage}
           alt=""
           aria-hidden
-          className="absolute inset-0 h-full w-full object-cover md:hidden"
+          className="absolute inset-0 h-full w-full object-cover object-center md:hidden"
         />
-        <div className="absolute inset-0 bg-ink/55 md:hidden" />
+        <div className="absolute inset-0 bg-ink/45 md:hidden" />
+        <div className="absolute inset-x-0 bottom-0 h-3/4 bg-gradient-to-t from-ink via-ink/65 to-transparent md:hidden" />
 
-        <div className="relative w-full max-w-sm text-ivory">
-          <h1 className="text-center font-display text-3xl tracking-wide sm:text-4xl">
+        <div className="relative w-full max-w-md text-ivory">
+          <h1 className="text-center font-display text-3xl font-semibold uppercase leading-tight sm:text-4xl lg:text-5xl">
             Find your unique style
           </h1>
-          <p className="mt-2 text-center text-sm text-ivory/70">Let&apos;s get started!</p>
+          <p className="mt-3 text-center text-xs font-medium uppercase tracking-[0.14em] text-ivory/75">
+            Let&apos;s get started!
+          </p>
 
           <form
-            className="mt-10 space-y-3"
+            className="mt-8 space-y-3 sm:mt-10"
             onSubmit={async (e) => {
               e.preventDefault();
               setBusy(true);
@@ -99,7 +102,7 @@ function AuthPage() {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               placeholder="Email"
-              className="h-12 w-full rounded-full border border-ivory/25 bg-ivory/10 px-5 text-sm text-ivory placeholder:text-ivory/60 focus:border-ivory/60 focus:outline-none"
+              className="h-13 w-full rounded-full border border-ivory/30 bg-ivory/15 px-6 text-sm text-ivory outline-none backdrop-blur-md placeholder:text-ivory/70 focus:border-ivory/70 focus:ring-1 focus:ring-ivory/20"
             />
             <input
               type="password"
@@ -108,12 +111,12 @@ function AuthPage() {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               placeholder="Password"
-              className="h-12 w-full rounded-full border border-ivory/25 bg-ivory/10 px-5 text-sm text-ivory placeholder:text-ivory/60 focus:border-ivory/60 focus:outline-none"
+              className="h-13 w-full rounded-full border border-ivory/30 bg-ivory/15 px-6 text-sm text-ivory outline-none backdrop-blur-md placeholder:text-ivory/70 focus:border-ivory/70 focus:ring-1 focus:ring-ivory/20"
             />
             <button
               type="submit"
               disabled={busy}
-              className="label-caps h-12 w-full rounded-full bg-ink text-ivory ring-1 ring-ivory/30 transition-colors hover:bg-ivory hover:text-ink disabled:opacity-60"
+              className="h-13 w-full rounded-full bg-ink font-display text-sm font-semibold uppercase text-ivory ring-1 ring-ivory/30 transition-colors hover:bg-ivory hover:text-ink disabled:opacity-60"
             >
               {busy ? "Please wait…" : mode === "signup" ? "Sign up" : "Sign in"}
             </button>
@@ -135,7 +138,7 @@ function AuthPage() {
             <p className="mt-4 text-center text-xs leading-relaxed text-ivory/80">{notice}</p>
           ) : null}
 
-          <p className="mt-8 text-center text-sm text-ivory/75">
+          <p className="mt-7 text-center text-sm text-ivory/75">
             {mode === "signup" ? "Already have an account?" : "New to Sita?"}{" "}
             <button
               type="button"
@@ -143,7 +146,7 @@ function AuthPage() {
                 setMode(mode === "signup" ? "signin" : "signup");
                 setNotice(null);
               }}
-              className="label-caps text-ivory underline underline-offset-4"
+              className="font-display text-sm font-semibold uppercase text-ivory underline underline-offset-4"
             >
               {mode === "signup" ? "Sign in" : "Sign up"}
             </button>

@@ -24,14 +24,14 @@ function Splash() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    const t = setTimeout(() => navigate({ to: "/auth" }), 2200);
+    const t = setTimeout(() => navigate({ to: "/auth" }), 2500);
     return () => clearTimeout(t);
   }, [navigate]);
 
   return (
     <main className="flex min-h-screen flex-col items-center justify-center bg-ink px-6">
-      <h1 className="wordmark animate-in fade-in text-ivory duration-1000 text-5xl sm:text-6xl md:text-7xl">
-        Sita
+      <h1 className="wordmark animate-in fade-in text-5xl text-ivory duration-1000 sm:text-6xl md:text-7xl">
+        SITA
       </h1>
     </main>
   );

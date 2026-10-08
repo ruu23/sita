@@ -11,13 +11,13 @@ const items = [
 
 export function BottomNav({ active = "Home" }: { active?: string }) {
   return (
-    <nav className="fixed inset-x-0 bottom-0 z-40 border-t border-border bg-card/95 backdrop-blur md:hidden">
+    <nav className="fixed inset-x-0 bottom-0 z-40 border-t border-border bg-card/95 backdrop-blur-xl md:hidden">
       <ul className="mx-auto grid max-w-lg grid-cols-5">
         {items.map(({ label, icon: Icon, to }) => (
           <li key={label}>
             <Link
               to={to}
-              className={`flex flex-col items-center gap-1 py-3 transition-colors ${
+              className={`flex min-h-16 flex-col items-center justify-center gap-1 py-2 transition-colors ${
                 active === label ? "text-foreground" : "text-muted-foreground"
               }`}
             >
