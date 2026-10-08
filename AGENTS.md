@@ -8,5 +8,3 @@
 > Commits you push to the connected branch sync back to Lovable and show up in
 > the editor, so keep the branch in a working state.
 <!-- LOVABLE:END -->
-
-- Auth uses one full-bleed existing fashion photo and the shared Button component; preserve email/password behavior when changing presentation.

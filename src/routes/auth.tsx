@@ -1,7 +1,6 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { Button } from "@/components/ui/button";
 import heroImage from "@/assets/auth-hero.jpg";
 
 export const Route = createFileRoute("/auth")({
@@ -17,8 +16,6 @@ export const Route = createFileRoute("/auth")({
         property: "og:description",
         content: "Create your SITA account to follow Egyptian local fashion brands.",
       },
-      { property: "og:type", content: "website" },
-      { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
   component: AuthPage,
@@ -42,26 +39,34 @@ function AuthPage() {
   }, []);
 
   return (
-    <main className="relative isolate min-h-svh overflow-hidden bg-ink">
-      <img
-        src={heroImage}
-        alt="Street style in neutral tones"
-        width={1024}
-        height={1536}
-        fetchPriority="high"
-        className="absolute inset-0 -z-20 h-full w-full object-cover object-center"
-      />
-      <div className="absolute inset-0 -z-10 bg-ink/25" />
+    <main className="min-h-screen bg-ink md:grid md:grid-cols-2">
+      <div className="relative hidden md:block">
+        <img
+          src={heroImage}
+          alt="Street style in neutral tones"
+          width={1024}
+          height={1536}
+          className="h-full w-full object-cover"
+        />
+      </div>
 
-      <div className="flex min-h-svh justify-center px-8 pb-12 pt-[43svh] sm:pb-16 sm:pt-[40svh]">
-        <div className="relative w-full max-w-xs text-ivory sm:max-w-sm">
-          <h1 className="text-center font-display text-2xl font-bold uppercase sm:text-3xl">
+      <div className="relative flex min-h-screen items-center justify-center overflow-hidden px-6 py-16">
+        <img
+          src={heroImage}
+          alt=""
+          aria-hidden
+          className="absolute inset-0 h-full w-full object-cover md:hidden"
+        />
+        <div className="absolute inset-0 bg-ink/55 md:hidden" />
+
+        <div className="relative w-full max-w-sm text-ivory">
+          <h1 className="text-center font-display text-3xl tracking-wide sm:text-4xl">
             Find your unique style
           </h1>
-          <p className="mt-1 text-center font-display text-lg font-semibold uppercase">Let&apos;s get started!</p>
+          <p className="mt-2 text-center text-sm text-ivory/70">Let&apos;s get started!</p>
 
           <form
-            className="mt-6 space-y-3 sm:mt-8"
+            className="mt-10 space-y-3"
             onSubmit={async (e) => {
               e.preventDefault();
               setBusy(true);
@@ -90,68 +95,62 @@ function AuthPage() {
           >
             <input
               type="email"
-              aria-label="Email"
-              autoComplete="email"
               required
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               placeholder="Email"
-              className="h-12 w-full rounded-xl border border-ivory/20 bg-ivory/65 px-4 text-sm text-ink placeholder:text-ink/60 focus:bg-ivory/85 focus:outline-none focus:ring-2 focus:ring-ivory/60"
+              className="h-12 w-full rounded-full border border-ivory/25 bg-ivory/10 px-5 text-sm text-ivory placeholder:text-ivory/60 focus:border-ivory/60 focus:outline-none"
             />
             <input
               type="password"
-              aria-label="Password"
-              autoComplete={mode === "signup" ? "new-password" : "current-password"}
               required
               minLength={6}
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               placeholder="Password"
-              className="h-12 w-full rounded-xl border border-ivory/20 bg-ivory/65 px-4 text-sm text-ink placeholder:text-ink/60 focus:bg-ivory/85 focus:outline-none focus:ring-2 focus:ring-ivory/60"
+              className="h-12 w-full rounded-full border border-ivory/25 bg-ivory/10 px-5 text-sm text-ivory placeholder:text-ivory/60 focus:border-ivory/60 focus:outline-none"
             />
-            <Button
+            <button
               type="submit"
               disabled={busy}
-              className="mx-auto mt-5 flex h-11 w-3/5 rounded-full bg-ink font-display text-lg font-bold uppercase text-ivory shadow-none hover:bg-ink/85 focus-visible:ring-ivory disabled:opacity-60"
+              className="label-caps h-12 w-full rounded-full bg-ink text-ivory ring-1 ring-ivory/30 transition-colors hover:bg-ivory hover:text-ink disabled:opacity-60"
             >
               {busy ? "Please wait…" : mode === "signup" ? "Sign up" : "Sign in"}
-            </Button>
+            </button>
             {userEmail ? (
               <p className="pt-2 text-center text-xs text-ivory/80">
                 Signed in as {userEmail} ·{" "}
-                <Button
+                <button
                   type="button"
-                  variant="link"
-                  className="h-auto p-0 text-xs text-ivory underline underline-offset-4"
+                  className="underline underline-offset-4"
                   onClick={() => supabase.auth.signOut()}
                 >
                   Sign out
-                </Button>
+                </button>
               </p>
             ) : null}
           </form>
 
           {notice ? (
-            <p role="status" className="mt-4 text-center text-sm leading-relaxed text-ivory">{notice}</p>
+            <p className="mt-4 text-center text-xs leading-relaxed text-ivory/80">{notice}</p>
           ) : null}
 
-          <p className="mt-7 text-center text-xs text-ivory sm:text-sm">
+          <p className="mt-8 text-center text-sm text-ivory/75">
             {mode === "signup" ? "Already have an account?" : "New to Sita?"}{" "}
-            <Button
+            <button
               type="button"
-              variant="link"
               onClick={() => {
                 setMode(mode === "signup" ? "signin" : "signup");
                 setNotice(null);
               }}
-              className="h-auto p-0 font-display text-sm font-bold uppercase text-ivory underline underline-offset-4"
+              className="label-caps text-ivory underline underline-offset-4"
             >
               {mode === "signup" ? "Sign in" : "Sign up"}
-            </Button>
+            </button>
           </p>
 
-          <p className="mt-6 text-center">
-            <Link to="/home" className="text-xs text-ivory/85 underline underline-offset-4 hover:text-ivory">
+          <p className="mt-10 text-center">
+            <Link to="/home" className="label-caps text-ivory/60 underline-offset-8 hover:underline">
               Browse without an account
             </Link>
           </p>

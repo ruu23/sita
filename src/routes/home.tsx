@@ -20,8 +20,6 @@ export const Route = createFileRoute("/home")({
         property: "og:description",
         content: "Live new arrivals from Egypt's local fashion labels in one feed.",
       },
-      { property: "og:type", content: "website" },
-      { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
   loader: () => listNewArrivals(),
