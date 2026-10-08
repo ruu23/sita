@@ -57,7 +57,7 @@ function Carousel({ items }: { items: Product[] }) {
   };
 
   return (
-    <section className="relative bg-ink">
+    <section className="relative bg-transparent">
       <div
         ref={trackRef}
         onScroll={onScroll}
@@ -127,7 +127,7 @@ function Carousel({ items }: { items: Product[] }) {
             aria-label={`Go to slide ${idx + 1}`}
             onClick={() => goTo(idx)}
             className={`h-1.5 w-1.5 rounded-full transition-colors ${
-              idx === i ? "bg-ivory" : "bg-ivory/40"
+              idx === i ? "bg-foreground" : "bg-foreground/30"
             }`}
           />
         ))}
