@@ -20,6 +20,8 @@ export const Route = createFileRoute("/me")({
         property: "og:description",
         content: "Manage your SITA account and saved pieces.",
       },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
   component: MePage,
