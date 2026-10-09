@@ -16,6 +16,8 @@ export const Route = createFileRoute("/auth")({
         property: "og:description",
         content: "Create your SITA account to follow Egyptian local fashion brands.",
       },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
   component: AuthPage,

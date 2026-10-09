@@ -7,3 +7,4 @@
 - [x] Brand pages: breadcrumbs + clear link back to all brands
 - [x] Brand pages: description, logo, featured pieces
 - [x] Create admin account and verify /admin
+- [x] Apply responsive SITA visual brief to Splash, Sign Up, and Home
