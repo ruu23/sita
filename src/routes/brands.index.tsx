@@ -1,7 +1,9 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
+import { ArrowUpRight } from "lucide-react";
 import { BRANDS } from "@/lib/brands";
 import { BottomNav } from "@/components/BottomNav";
 import { PageHeader } from "@/components/PageHeader";
+import { PageIntro } from "@/components/PageIntro";
 import { Breadcrumbs } from "@/components/Breadcrumbs";
 
 export const Route = createFileRoute("/brands/")({
@@ -23,27 +25,24 @@ function BrandsPage() {
     <div className="min-h-screen pb-24 md:pb-10">
       <PageHeader title="Brands" />
       <Breadcrumbs items={[{ label: "Home", to: "/home" }, { label: "Brands" }]} />
-      <main className="mx-auto max-w-5xl px-4 py-12 sm:px-6">
-        <div className="text-center">
-          <p className="label-caps text-muted-foreground">Seen. Discovered. Chosen.</p>
-          <h1 className="mt-3 text-4xl sm:text-5xl">The Brands</h1>
-        </div>
+      <main className="editorial-container py-12 sm:py-16">
+        <PageIntro title="The Brands" eyebrow="Seen. Discovered. Chosen." />
         <ul className="mt-10 divide-y divide-border border-y border-border">
           {BRANDS.map((b) => (
             <li key={b.slug}>
               <Link
                 to="/brands/$slug"
                 params={{ slug: b.slug }}
-                className="group flex flex-col gap-4 py-8 sm:flex-row sm:items-center sm:gap-8"
+                className="group grid grid-cols-[minmax(0,1fr)_auto] items-center gap-5 py-8 sm:py-10 md:grid-cols-[160px_minmax(0,1fr)_auto]"
               >
                 <img
                   src={b.logo}
                   alt={`${b.name} logo`}
                   loading="lazy"
-                  className="h-8 w-auto max-w-[140px] shrink-0 object-contain mix-blend-multiply"
+                  className="col-span-2 h-10 w-auto max-w-[150px] object-contain mix-blend-multiply md:col-span-1"
                 />
-                <span className="wordmark text-2xl group-hover:text-espresso sm:text-3xl">{b.name}</span>
-                <span className="text-sm text-muted-foreground">{b.tagline}</span>
+                <span className="min-w-0"><span className="block font-display text-2xl font-semibold transition-colors group-hover:text-espresso sm:text-3xl">{b.name}</span><span className="mt-2 block text-xs leading-relaxed text-muted-foreground sm:text-sm">{b.tagline}</span></span>
+                <ArrowUpRight className="h-5 w-5 shrink-0 text-espresso" strokeWidth={1.2} />
               </Link>
             </li>
           ))}

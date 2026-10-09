@@ -6,6 +6,8 @@ import { recommendOutfit, type StylistResponse } from "@/lib/stylist.functions";
 import { ProductCard } from "@/components/ProductCard";
 import { BottomNav } from "@/components/BottomNav";
 import { PageHeader } from "@/components/PageHeader";
+import { PageIntro } from "@/components/PageIntro";
+import { Button } from "@/components/ui/button";
 
 export const Route = createFileRoute("/stylist")({
   head: () => ({
@@ -52,45 +54,43 @@ function StylistPage() {
   return (
     <div className="min-h-screen pb-24 md:pb-10">
       <PageHeader title="Stylist" />
-      <main className="mx-auto max-w-7xl px-4 py-8 sm:px-6">
+      <main className="editorial-container py-12 sm:py-16">
         <section className="mx-auto max-w-2xl text-center">
-          <p className="label-caps text-muted-foreground">AI Stylist</p>
-          <h1 className="mt-2 font-display text-4xl sm:text-5xl">Describe the moment.</h1>
-          <p className="mt-3 text-sm text-muted-foreground">
-            Tell us the occasion, mood or budget — we'll build a look from Egypt's local labels.
-          </p>
+          <PageIntro title="AI Stylist" eyebrow="The SITA edit" />
           <form
-            className="mt-6 flex flex-col gap-3 sm:flex-row"
+            className="mt-6 flex flex-col gap-3"
             onSubmit={(e) => {
               e.preventDefault();
               run(prompt);
             }}
           >
             <input
+              aria-label="Outfit or occasion"
               value={prompt}
               onChange={(e) => setPrompt(e.target.value)}
               maxLength={500}
               placeholder="e.g. Engagement party, elegant but comfortable"
-              className="flex-1 border border-border bg-card px-4 py-3 text-sm outline-none focus:border-foreground"
+              className="min-w-0 rounded-full border border-border bg-secondary/60 px-5 py-4 text-sm outline-none focus:border-foreground"
             />
-            <button
+            <Button
               disabled={loading || prompt.trim().length < 3}
-              className="label-caps inline-flex items-center justify-center gap-2 bg-primary px-6 py-3 text-primary-foreground disabled:opacity-50"
+              className="mx-auto h-12 rounded-full px-9 font-display text-base shadow-none"
             >
               <Sparkles className="h-4 w-4" strokeWidth={1.4} />
               {loading ? "Styling…" : "Style me"}
-            </button>
+            </Button>
           </form>
           <div className="mt-4 flex flex-wrap justify-center gap-2">
             {IDEAS.map((i) => (
-              <button
+              <Button
+                variant="ghost"
                 key={i}
                 onClick={() => run(i)}
                 disabled={loading}
-                className="border border-border px-3 py-1.5 text-xs text-muted-foreground hover:border-foreground hover:text-foreground disabled:opacity-50"
+                className="h-auto whitespace-normal rounded-none border-b border-border px-1 py-2 text-xs text-muted-foreground hover:bg-transparent hover:text-foreground"
               >
                 {i}
-              </button>
+              </Button>
             ))}
           </div>
         </section>
@@ -111,7 +111,7 @@ function StylistPage() {
               <h2 className="font-display text-3xl">{result.title}</h2>
               {result.note && <p className="mt-2 text-sm text-muted-foreground">{result.note}</p>}
             </div>
-            <div className="mt-8 grid grid-cols-2 gap-x-4 gap-y-8 sm:grid-cols-3 lg:grid-cols-4">
+            <div className="editorial-grid mt-10">
               {result.items.map(({ product, reason }) => (
                 <div key={product.id}>
                   <ProductCard product={product} />
