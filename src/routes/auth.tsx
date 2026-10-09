@@ -1,7 +1,8 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import heroImage from "@/assets/auth-hero.jpg";
+import heroAsset from "@/assets/auth-jacket.jpg.asset.json";
+import { Button } from "@/components/ui/button";
 
 export const Route = createFileRoute("/auth")({
   head: () => ({
@@ -41,37 +42,30 @@ function AuthPage() {
   }, []);
 
   return (
-    <main className="min-h-screen bg-ink md:grid md:grid-cols-[minmax(0,1.08fr)_minmax(420px,0.92fr)]">
-      <div className="relative hidden min-h-screen overflow-hidden md:block">
+    <main className="relative isolate min-h-svh bg-ink">
+      <div className="absolute inset-0 -z-10 overflow-hidden">
         <img
-          src={heroImage}
-          alt="Street style in neutral tones"
-          width={1024}
-          height={1536}
+          src={heroAsset.url}
+          alt="Burgundy tailored jacket"
+          width={768}
+          height={960}
           className="absolute inset-0 h-full w-full object-cover object-center"
         />
+        <div className="absolute inset-0 bg-ink/35" />
+        <div className="absolute inset-0 bg-gradient-to-t from-ink/65 via-ink/10 to-transparent" />
       </div>
 
-      <div className="relative flex min-h-screen items-end justify-center overflow-hidden px-6 pb-10 pt-28 sm:px-10 sm:pb-16 md:items-center md:bg-ink md:px-12 md:py-16 lg:px-20">
-        <img
-          src={heroImage}
-          alt=""
-          aria-hidden
-          className="absolute inset-0 h-full w-full object-cover object-center md:hidden"
-        />
-        <div className="absolute inset-0 bg-ink/45 md:hidden" />
-        <div className="absolute inset-x-0 bottom-0 h-3/4 bg-gradient-to-t from-ink via-ink/65 to-transparent md:hidden" />
-
-        <div className="relative w-full max-w-md text-ivory">
-          <h1 className="text-center font-display text-3xl font-semibold uppercase leading-tight sm:text-4xl lg:text-5xl">
+      <div className="flex min-h-svh justify-center px-7 pb-[10svh] pt-[43svh] sm:px-10">
+        <div className="relative w-full max-w-[360px] text-ivory">
+          <h1 className="text-center font-display text-xl font-bold uppercase leading-tight sm:text-2xl">
             Find your unique style
           </h1>
-          <p className="mt-3 text-center text-xs font-medium uppercase tracking-[0.14em] text-ivory/75">
+          <p className="mt-1 text-center font-display text-base font-medium uppercase text-ivory">
             Let&apos;s get started!
           </p>
 
           <form
-            className="mt-8 space-y-3 sm:mt-10"
+            className="mt-6 space-y-3"
             onSubmit={async (e) => {
               e.preventDefault();
               setBusy(true);
@@ -100,38 +94,43 @@ function AuthPage() {
           >
             <input
               type="email"
+              aria-label="Email"
+              autoComplete="email"
               required
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               placeholder="Email"
-              className="h-13 w-full rounded-full border border-ivory/30 bg-ivory/15 px-6 text-sm text-ivory outline-none backdrop-blur-md placeholder:text-ivory/70 focus:border-ivory/70 focus:ring-1 focus:ring-ivory/20"
+              className="h-11 w-full rounded-xl border border-ivory/20 bg-ivory/45 px-4 text-xs text-ivory outline-none backdrop-blur-md placeholder:text-ivory focus:border-ivory/70 focus:ring-1 focus:ring-ivory/20"
             />
             <input
               type="password"
+              aria-label="Password"
+              autoComplete={mode === "signup" ? "new-password" : "current-password"}
               required
               minLength={6}
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               placeholder="Password"
-              className="h-13 w-full rounded-full border border-ivory/30 bg-ivory/15 px-6 text-sm text-ivory outline-none backdrop-blur-md placeholder:text-ivory/70 focus:border-ivory/70 focus:ring-1 focus:ring-ivory/20"
+              className="h-11 w-full rounded-xl border border-ivory/20 bg-ivory/45 px-4 text-xs text-ivory outline-none backdrop-blur-md placeholder:text-ivory focus:border-ivory/70 focus:ring-1 focus:ring-ivory/20"
             />
-            <button
+            <Button
               type="submit"
               disabled={busy}
-              className="h-13 w-full rounded-full bg-ink font-display text-sm font-semibold uppercase text-ivory ring-1 ring-ivory/30 transition-colors hover:bg-ivory hover:text-ink disabled:opacity-60"
+              className="mx-auto mt-5 flex h-11 w-3/5 rounded-full bg-ink font-display text-base font-semibold uppercase text-ivory shadow-none hover:bg-ink/85 disabled:opacity-60"
             >
               {busy ? "Please wait…" : mode === "signup" ? "Sign up" : "Sign in"}
-            </button>
+            </Button>
             {userEmail ? (
               <p className="pt-2 text-center text-xs text-ivory/80">
                 Signed in as {userEmail} ·{" "}
-                <button
+                <Button
                   type="button"
-                  className="underline underline-offset-4"
+                  variant="link"
+                  className="h-auto p-0 text-xs text-ivory underline underline-offset-4"
                   onClick={() => supabase.auth.signOut()}
                 >
                   Sign out
-                </button>
+                </Button>
               </p>
             ) : null}
           </form>
@@ -140,22 +139,23 @@ function AuthPage() {
             <p className="mt-4 text-center text-xs leading-relaxed text-ivory/80">{notice}</p>
           ) : null}
 
-          <p className="mt-7 text-center text-sm text-ivory/75">
+          <p className="mt-7 text-center text-xs text-ivory">
             {mode === "signup" ? "Already have an account?" : "New to Sita?"}{" "}
-            <button
+            <Button
               type="button"
+              variant="link"
               onClick={() => {
                 setMode(mode === "signup" ? "signin" : "signup");
                 setNotice(null);
               }}
-              className="font-display text-sm font-semibold uppercase text-ivory underline underline-offset-4"
+              className="h-auto p-0 font-display text-sm font-bold uppercase text-ivory"
             >
               {mode === "signup" ? "Sign in" : "Sign up"}
-            </button>
+            </Button>
           </p>
 
-          <p className="mt-10 text-center">
-            <Link to="/home" className="label-caps text-ivory/60 underline-offset-8 hover:underline">
+          <p className="mt-6 text-center">
+            <Link to="/home" className="text-[10px] text-ivory/75 underline-offset-4 hover:underline">
               Browse without an account
             </Link>
           </p>
