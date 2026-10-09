@@ -6,6 +6,8 @@ import { BRANDS } from "@/lib/brands";
 import { ProductCard } from "@/components/ProductCard";
 import { BottomNav } from "@/components/BottomNav";
 import { PageHeader } from "@/components/PageHeader";
+import { PageIntro } from "@/components/PageIntro";
+import { Button } from "@/components/ui/button";
 
 export const Route = createFileRoute("/search")({
   head: () => ({
@@ -39,26 +41,28 @@ function SearchPage() {
   return (
     <div className="min-h-screen pb-20 md:pb-0">
       <PageHeader title="Search" />
-      <section className="mx-auto max-w-7xl px-4 py-8 sm:px-6">
+      <section className="editorial-container py-12 sm:py-16">
+        <PageIntro title="Search" eyebrow="Across every label" />
         <div className="relative mx-auto max-w-xl">
           <Search className="absolute top-1/2 left-4 h-4 w-4 -translate-y-1/2 text-muted-foreground" strokeWidth={1.4} />
           <input
+            aria-label="Search pieces"
             autoFocus
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             placeholder="Search a piece, e.g. black skirt"
-            className="h-12 w-full rounded-full border border-input bg-card pr-4 pl-11 text-sm focus:border-ring focus:outline-none"
+            className="h-12 w-full rounded-full border border-input bg-secondary/60 pr-4 pl-11 text-sm focus:border-ring focus:outline-none"
           />
         </div>
         <div className="mt-5 flex flex-wrap justify-center gap-x-5 gap-y-2">
           {[{ slug: null, name: "All brands" }, ...BRANDS].map((b) => (
-            <button
+            <Button type="button" variant="ghost"
               key={b.slug ?? "all"}
               onClick={() => setBrand(b.slug)}
-              className={`label-caps ${brand === b.slug ? "text-foreground" : "text-muted-foreground"}`}
+              className={`label-caps h-auto rounded-none border-b px-1 py-2 hover:bg-transparent ${brand === b.slug ? "border-foreground text-foreground" : "border-transparent text-muted-foreground"}`}
             >
               {b.name}
-            </button>
+            </Button>
           ))}
         </div>
         {brand ? (
@@ -79,7 +83,7 @@ function SearchPage() {
         {results.length === 0 ? (
           <p className="py-16 text-center text-sm text-muted-foreground">No pieces match “{query}”.</p>
         ) : (
-          <div className="grid grid-cols-2 gap-x-3 gap-y-8 pb-16 sm:grid-cols-3 lg:grid-cols-4 lg:gap-x-6">
+          <div className="editorial-grid pb-16">
             {results.map((p) => (
               <ProductCard key={p.id} product={p} />
             ))}
