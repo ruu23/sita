@@ -8,3 +8,4 @@
 - [x] Brand pages: description, logo, featured pieces
 - [x] Create admin account and verify /admin
 - [x] Apply responsive SITA visual brief to Splash, Sign Up, and Home
+- [ ] Complete consistent editorial styling for search, wishlist, profile, stylist, brands, and admin
