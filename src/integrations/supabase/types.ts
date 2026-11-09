@@ -14,6 +14,51 @@ export type Database = {
   }
   public: {
     Tables: {
+      sita_brands: {
+        Row: {
+          collections: Json
+          created_at: string
+          description: string | null
+          domain: string | null
+          is_active: boolean
+          logo: string | null
+          name: string | null
+          site: string | null
+          slug: string
+          socials: Json
+          story: string[]
+          tagline: string | null
+        }
+        Insert: {
+          collections?: Json
+          created_at?: string
+          description?: string | null
+          domain?: string | null
+          is_active?: boolean
+          logo?: string | null
+          name?: string | null
+          site?: string | null
+          slug: string
+          socials?: Json
+          story?: string[]
+          tagline?: string | null
+        }
+        Update: {
+          collections?: Json
+          created_at?: string
+          description?: string | null
+          domain?: string | null
+          is_active?: boolean
+          logo?: string | null
+          name?: string | null
+          site?: string | null
+          slug?: string
+          socials?: Json
+          story?: string[]
+          tagline?: string | null
+        }
+        Relationships: []
+      }
       user_roles: {
         Row: {
           id: string
