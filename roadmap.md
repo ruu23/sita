@@ -7,5 +7,6 @@
 - [x] Brand pages: breadcrumbs + clear link back to all brands
 - [x] Brand pages: description, logo, featured pieces
 - [x] Create admin account and verify /admin
+- [ ] Add dedicated admin sign-in and persistent admin-only brand add/remove management
 - [x] Apply responsive SITA visual brief to Splash, Sign Up, and Home
 - [ ] Complete consistent editorial styling for search, wishlist, profile, stylist, brands, and admin
