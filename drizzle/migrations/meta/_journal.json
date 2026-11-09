@@ -8,6 +8,13 @@
       "when": 1791218350559,
       "tag": "0000_user_roles",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1794259603970,
+      "tag": "0001_create_sita_brands_catalog",
+      "breakpoints": true
     }
   ]
 }
