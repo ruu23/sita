@@ -1,6 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { ArrowUpRight } from "lucide-react";
-import { BRANDS } from "@/lib/brands";
+import { listBrands } from "@/lib/brands.functions";
 import { BottomNav } from "@/components/BottomNav";
 import { PageHeader } from "@/components/PageHeader";
 import { PageIntro } from "@/components/PageIntro";
@@ -17,10 +17,12 @@ export const Route = createFileRoute("/brands/")({
       { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
+  loader: () => listBrands(),
   component: BrandsPage,
 });
 
 function BrandsPage() {
+  const brands = Route.useLoaderData();
   return (
     <div className="min-h-screen pb-24 md:pb-10">
       <PageHeader title="Brands" />
@@ -28,7 +30,7 @@ function BrandsPage() {
       <main className="editorial-container py-12 sm:py-16">
         <PageIntro title="The Brands" eyebrow="Seen. Discovered. Chosen." />
         <ul className="mt-10 divide-y divide-border border-y border-border">
-          {BRANDS.map((b) => (
+          {brands.map((b) => (
             <li key={b.slug}>
               <Link
                 to="/brands/$slug"

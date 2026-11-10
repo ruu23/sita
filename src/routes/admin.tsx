@@ -1,10 +1,12 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState } from "react";
 import { useServerFn } from "@tanstack/react-start";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { getAdminOverview } from "@/lib/admin.functions";
+import { addManagedBrand, removeManagedBrand } from "@/lib/brands.functions";
 import { PageHeader } from "@/components/PageHeader";
 import { PageIntro } from "@/components/PageIntro";
+import { Button } from "@/components/ui/button";
 
 export const Route = createFileRoute("/admin")({
   ssr: false,
@@ -26,8 +28,17 @@ const fmt = (d: string | null) => (d ? new Date(d).toLocaleDateString("en-GB", {
 
 function AdminPage() {
   const fetchOverview = useServerFn(getAdminOverview);
+  const addBrand = useServerFn(addManagedBrand);
+  const removeBrand = useServerFn(removeManagedBrand);
+  const queryClient = useQueryClient();
   const { data, isLoading, error } = useQuery({ queryKey: ["admin"], queryFn: () => fetchOverview(), retry: false });
 
+  const [brandName, setBrandName] = useState("");
+  const [brandSite, setBrandSite] = useState("");
+  const [brandTagline, setBrandTagline] = useState("");
+  const [brandLogo, setBrandLogo] = useState("");
+  const [brandNotice, setBrandNotice] = useState<string | null>(null);
+  const [brandBusy, setBrandBusy] = useState(false);
   const [bq, setBq] = useState("");
   const [bStatus, setBStatus] = useState("all");
   const [uq, setUq] = useState("");
@@ -48,7 +59,7 @@ function AdminPage() {
         {isLoading && <p className="text-center text-sm text-muted-foreground">Loading…</p>}
         {error && (
           <p className="text-center text-sm">
-            Please <Link to="/auth" className="underline">sign in</Link> with an admin account.
+            Please <Link to="/admin-auth" className="underline">sign in</Link> with an admin account.
           </p>
         )}
         {data && !data.allowed && <p className="text-center text-sm">This page is for SITA admins only.</p>}
@@ -62,6 +73,54 @@ function AdminPage() {
             </div>
 
             <h2 className="mt-12 font-display text-2xl font-semibold sm:text-3xl">Brands</h2>
+            <form
+              className="mt-5 grid gap-3 border-y border-border py-5 sm:grid-cols-2"
+              onSubmit={async (event) => {
+                event.preventDefault();
+                setBrandBusy(true);
+                setBrandNotice(null);
+                try {
+                  await addBrand({ data: { name: brandName, site: brandSite, tagline: brandTagline, logo: brandLogo } });
+                  setBrandName("");
+                  setBrandSite("");
+                  setBrandTagline("");
+                  setBrandLogo("");
+                  setBrandNotice("Brand added to SITA.");
+                  await Promise.all([
+                    queryClient.invalidateQueries({ queryKey: ["admin"] }),
+                    queryClient.invalidateQueries({ queryKey: ["brands"] }),
+                    queryClient.invalidateQueries({ queryKey: ["new-arrivals"] }),
+                  ]);
+                  window.location.reload();
+                } catch (err) {
+                  setBrandNotice(err instanceof Error ? err.message : "Couldn't add this brand.");
+                } finally {
+                  setBrandBusy(false);
+                }
+              }}
+            >
+              <label className="grid gap-1.5 text-xs text-muted-foreground">
+                Brand name
+                <input aria-label="New brand name" required minLength={2} maxLength={80} value={brandName} onChange={(event) => setBrandName(event.target.value)} placeholder="e.g. Local Label" className={inputCls} />
+              </label>
+              <label className="grid gap-1.5 text-xs text-muted-foreground">
+                Shopify store website
+                <input aria-label="New brand Shopify website" required type="url" value={brandSite} onChange={(event) => setBrandSite(event.target.value)} placeholder="https://brand.com" className={inputCls} />
+              </label>
+              <label className="grid gap-1.5 text-xs text-muted-foreground">
+                Short description
+                <input aria-label="New brand description" required minLength={3} maxLength={180} value={brandTagline} onChange={(event) => setBrandTagline(event.target.value)} placeholder="A few words about the label" className={inputCls} />
+              </label>
+              <label className="grid gap-1.5 text-xs text-muted-foreground">
+                Logo image link <span className="text-muted-foreground/70">(optional)</span>
+                <input aria-label="New brand logo link" type="url" value={brandLogo} onChange={(event) => setBrandLogo(event.target.value)} placeholder="https://brand.com/logo.png" className={inputCls} />
+              </label>
+              <div className="flex flex-wrap items-center gap-3 sm:col-span-2">
+                <Button type="submit" disabled={brandBusy}>{brandBusy ? "Adding…" : "Add brand"}</Button>
+                {brandNotice ? <p role="status" className="text-sm text-muted-foreground">{brandNotice}</p> : null}
+                <p className="text-xs text-muted-foreground">Products load from Shopify storefront feeds. New brands start with the details above and can be enriched later.</p>
+              </div>
+            </form>
             <div className="mt-5 grid grid-cols-[minmax(0,1fr)_auto] gap-3 sm:flex sm:items-center">
               <input aria-label="Search brands" value={bq} onChange={(e) => setBq(e.target.value)} placeholder="Search brands…" className={`${inputCls} min-w-0 flex-1 sm:max-w-xs`} />
               <select aria-label="Brand status" value={bStatus} onChange={(e) => setBStatus(e.target.value)} className={inputCls}>
@@ -72,7 +131,7 @@ function AdminPage() {
             <div className="mt-5 overflow-x-auto border-y border-border bg-background">
               <table className="w-full min-w-[640px] text-left text-xs sm:text-sm">
                 <thead className="label-caps bg-secondary/60 text-muted-foreground">
-                  <tr><th className="px-4 py-4">Brand</th><th className="px-4 py-4">Store</th><th className="px-4 py-4">Pieces</th><th className="px-4 py-4">Collections</th><th className="px-4 py-4">Status</th></tr>
+                  <tr><th className="px-4 py-4">Brand</th><th className="px-4 py-4">Store</th><th className="px-4 py-4">Pieces</th><th className="px-4 py-4">Collections</th><th className="px-4 py-4">Status</th><th className="px-4 py-4">Action</th></tr>
                 </thead>
                 <tbody>
                   {brands.map((b) => (
@@ -82,6 +141,31 @@ function AdminPage() {
                       <td className="px-4 py-4">{b.products ?? "—"}</td>
                       <td className="px-4 py-4">{b.collections}</td>
                       <td className="px-4 py-4">{b.online ? "Online" : <span className="text-destructive">Unreachable</span>}</td>
+                      <td className="px-4 py-4">
+                        <Button
+                          type="button"
+                          variant="ghost"
+                          className="h-auto px-2 py-1 text-destructive"
+                          onClick={async () => {
+                            if (!window.confirm(`Remove ${b.name} from SITA?`)) return;
+                            setBrandNotice(null);
+                            try {
+                              await removeBrand({ data: { slug: b.slug } });
+                              setBrandNotice(`${b.name} removed from SITA.`);
+                              await Promise.all([
+                                queryClient.invalidateQueries({ queryKey: ["admin"] }),
+                                queryClient.invalidateQueries({ queryKey: ["brands"] }),
+                                queryClient.invalidateQueries({ queryKey: ["new-arrivals"] }),
+                              ]);
+                              window.location.reload();
+                            } catch (err) {
+                              setBrandNotice(err instanceof Error ? err.message : "Couldn't remove this brand.");
+                            }
+                          }}
+                        >
+                          Remove
+                        </Button>
+                      </td>
                     </tr>
                   ))}
                 </tbody>

@@ -2,7 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState } from "react";
 import { Search } from "lucide-react";
 import { listNewArrivals } from "@/lib/products.functions";
-import { BRANDS } from "@/lib/brands";
+import { listBrands } from "@/lib/brands.functions";
 import { ProductCard } from "@/components/ProductCard";
 import { BottomNav } from "@/components/BottomNav";
 import { PageHeader } from "@/components/PageHeader";
@@ -20,7 +20,10 @@ export const Route = createFileRoute("/search")({
       { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
-  loader: () => listNewArrivals(),
+  loader: async () => {
+    const [products, brands] = await Promise.all([listNewArrivals(), listBrands()]);
+    return { products, brands };
+  },
   component: SearchPage,
   errorComponent: () => (
     <p className="p-10 text-center text-sm text-muted-foreground">Couldn&apos;t load pieces. Please refresh.</p>
@@ -29,7 +32,7 @@ export const Route = createFileRoute("/search")({
 });
 
 function SearchPage() {
-  const products = Route.useLoaderData();
+  const { products, brands } = Route.useLoaderData();
   const [query, setQuery] = useState("");
   const [brand, setBrand] = useState<string | null>(null);
   const words = query.trim().toLowerCase().split(/\s+/).filter(Boolean);
@@ -55,7 +58,7 @@ function SearchPage() {
           />
         </div>
         <div className="mt-5 flex flex-wrap justify-center gap-x-5 gap-y-2">
-          {[{ slug: null, name: "All brands" }, ...BRANDS].map((b) => (
+          {[{ slug: null, name: "All brands" }, ...brands].map((b) => (
             <Button type="button" variant="ghost"
               key={b.slug ?? "all"}
               onClick={() => setBrand(b.slug)}
@@ -72,7 +75,7 @@ function SearchPage() {
               params={{ slug: brand }}
               className="label-caps text-espresso underline underline-offset-4"
             >
-              View {BRANDS.find((b) => b.slug === brand)?.name} page
+              View {brands.find((b) => b.slug === brand)?.name} page
             </Link>
           </div>
         ) : null}

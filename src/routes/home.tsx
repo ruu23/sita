@@ -2,7 +2,8 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useRef, useState } from "react";
 import { Heart, Menu, ShoppingBag, Search, X } from "lucide-react";
 import { listNewArrivals } from "@/lib/products.functions";
-import { BRANDS, type Product } from "@/lib/brands";
+import { listBrands } from "@/lib/brands.functions";
+import type { Product } from "@/lib/brands";
 import { ProductCard } from "@/components/ProductCard";
 import { BottomNav } from "@/components/BottomNav";
 
@@ -24,7 +25,10 @@ export const Route = createFileRoute("/home")({
       { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
-  loader: () => listNewArrivals(),
+  loader: async () => {
+    const [products, brands] = await Promise.all([listNewArrivals(), listBrands()]);
+    return { products, brands };
+  },
   component: HomePage,
   errorComponent: () => (
     <div className="flex min-h-screen items-center justify-center px-6 text-center">
@@ -139,7 +143,7 @@ function Carousel({ items }: { items: Product[] }) {
 }
 
 function HomePage() {
-  const products = Route.useLoaderData();
+  const { products, brands } = Route.useLoaderData();
   const [query, setQuery] = useState("");
   const [brand, setBrand] = useState<string | null>(null);
   const [menuOpen, setMenuOpen] = useState(false);
@@ -174,7 +178,7 @@ function HomePage() {
             >
               All brands
             </button>
-            {BRANDS.map((b) => (
+            {brands.map((b) => (
               <button
                 key={b.slug}
                 onClick={() => setBrand(b.slug)}
@@ -212,7 +216,7 @@ function HomePage() {
               >
                 All brands
               </button>
-              {BRANDS.map((b) => (
+              {brands.map((b) => (
                 <button
                   key={b.slug}
                   onClick={() => {
@@ -259,7 +263,7 @@ function HomePage() {
               params={{ slug: brand }}
               className="label-caps text-espresso underline underline-offset-4"
             >
-              View {BRANDS.find((b) => b.slug === brand)?.name} page
+              View {brands.find((b) => b.slug === brand)?.name} page
             </Link>
           </div>
         ) : null}
@@ -281,7 +285,7 @@ function HomePage() {
       <section className="border-t border-border bg-secondary px-4 py-12 sm:px-6">
         <h2 className="text-center font-display text-2xl font-semibold uppercase sm:text-3xl">Meet the brands</h2>
         <div className="mx-auto mt-8 grid max-w-5xl grid-cols-2 gap-3 md:grid-cols-4">
-          {BRANDS.map((b) => (
+          {brands.map((b) => (
             <Link
               key={b.slug}
               to="/brands/$slug"

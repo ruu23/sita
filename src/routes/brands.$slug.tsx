@@ -1,8 +1,8 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { z } from "zod";
 import { ArrowLeft, ArrowUpRight } from "lucide-react";
-import { getBrand } from "@/lib/brands";
 import { listBrandProducts, listFeaturedProducts } from "@/lib/products.functions";
+import { listBrands } from "@/lib/brands.functions";
 import { ProductCard } from "@/components/ProductCard";
 import { BottomNav } from "@/components/BottomNav";
 import { PageHeader } from "@/components/PageHeader";
@@ -12,7 +12,8 @@ export const Route = createFileRoute("/brands/$slug")({
   validateSearch: z.object({ collection: z.string().optional() }),
   loaderDeps: ({ search }) => ({ collection: search.collection }),
   loader: async ({ params, deps }) => {
-    const brand = getBrand(params.slug);
+    const brands = await listBrands();
+    const brand = brands.find((entry) => entry.slug === params.slug);
     if (!brand) throw notFound();
     const [products, featured] = await Promise.all([
       listBrandProducts({ data: { slug: brand.slug, collection: deps.collection } }),
@@ -20,10 +21,10 @@ export const Route = createFileRoute("/brands/$slug")({
         ? Promise.resolve([])
         : listFeaturedProducts({ data: { slug: brand.slug } }),
     ]);
-    return { slug: brand.slug, products, featured };
+    return { brand, products, featured };
   },
-  head: ({ params }) => {
-    const brand = getBrand(params.slug);
+  head: ({ loaderData, params }) => {
+    const brand = loaderData?.brand;
     const title = brand ? `${brand.name} — SITA` : "Brand not found — SITA";
     const desc = brand ? `${brand.tagline} Shop ${brand.name}'s collections and prices in EGP on SITA.` : "";
     return {
@@ -49,9 +50,9 @@ export const Route = createFileRoute("/brands/$slug")({
 });
 
 function BrandPage() {
-  const { slug, products, featured } = Route.useLoaderData();
+  const { brand, products, featured } = Route.useLoaderData();
   const { collection } = Route.useSearch();
-  const brand = getBrand(slug)!;
+  const { slug } = brand;
   const prices = products.map((p) => Number(p.price)).filter((n) => n > 0);
   const range = prices.length ? `${Math.round(Math.min(...prices))} – ${Math.round(Math.max(...prices))} EGP` : null;
 
