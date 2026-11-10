@@ -1,6 +1,5 @@
 import { createServerFn } from "@tanstack/react-start";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
-import { BRANDS } from "./brands";
 
 export const getAdminOverview = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
@@ -26,8 +25,13 @@ export const getAdminOverview = createServerFn({ method: "GET" })
       admin: (roles ?? []).some((r) => r.user_id === u.id && r.role === "admin"),
     }));
 
+    const url = process.env["SUPABASE_URL"];
+    const key = process.env["SUPABASE_PUBLISHABLE_KEY"];
+    if (!url || !key) throw new Error("Brand catalog is unavailable.");
+    const { getEffectiveBrands } = await import("./brands.server");
+    const activeBrands = await getEffectiveBrands(url, key);
     const brands = await Promise.all(
-      BRANDS.map(async (b) => {
+      activeBrands.map(async (b) => {
         let count: number | null = null;
         try {
           const res = await fetch(`${b.site}/products.json?limit=250`, {
