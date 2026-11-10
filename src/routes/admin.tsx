@@ -104,8 +104,8 @@ function AdminPage() {
                 <input aria-label="New brand name" required minLength={2} maxLength={80} value={brandName} onChange={(event) => setBrandName(event.target.value)} placeholder="e.g. Local Label" className={inputCls} />
               </label>
               <label className="grid gap-1.5 text-xs text-muted-foreground">
-                Store website
-                <input aria-label="New brand website" required type="url" value={brandSite} onChange={(event) => setBrandSite(event.target.value)} placeholder="https://brand.com" className={inputCls} />
+                Shopify store website
+                <input aria-label="New brand Shopify website" required type="url" value={brandSite} onChange={(event) => setBrandSite(event.target.value)} placeholder="https://brand.com" className={inputCls} />
               </label>
               <label className="grid gap-1.5 text-xs text-muted-foreground">
                 Short description
@@ -118,6 +118,7 @@ function AdminPage() {
               <div className="flex flex-wrap items-center gap-3 sm:col-span-2">
                 <Button type="submit" disabled={brandBusy}>{brandBusy ? "Adding…" : "Add brand"}</Button>
                 {brandNotice ? <p role="status" className="text-sm text-muted-foreground">{brandNotice}</p> : null}
+                <p className="text-xs text-muted-foreground">Products load from Shopify storefront feeds. New brands start with the details above and can be enriched later.</p>
               </div>
             </form>
             <div className="mt-5 grid grid-cols-[minmax(0,1fr)_auto] gap-3 sm:flex sm:items-center">

@@ -263,7 +263,7 @@ function HomePage() {
               params={{ slug: brand }}
               className="label-caps text-espresso underline underline-offset-4"
             >
-              View {BRANDS.find((b) => b.slug === brand)?.name} page
+              View {brands.find((b) => b.slug === brand)?.name} page
             </Link>
           </div>
         ) : null}
