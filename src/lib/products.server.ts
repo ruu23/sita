@@ -1,4 +1,4 @@
-import { BRANDS, type Brand, type Product } from "./brands";
+import type { Brand, Product } from "./brands";
 import { getEffectiveBrands } from "./brands.server";
 
 type ShopifyProduct = {
@@ -78,8 +78,4 @@ export async function fetchFeaturedCatalog(url: string, key: string, slug: strin
     }
   }
   return picked.slice(0, 4);
-}
-
-export function isBuiltInBrand(slug: string) {
-  return BRANDS.some((brand) => brand.slug === slug);
 }

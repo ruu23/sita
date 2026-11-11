@@ -86,11 +86,7 @@ function AdminPage() {
                   setBrandTagline("");
                   setBrandLogo("");
                   setBrandNotice("Brand added to SITA.");
-                  await Promise.all([
-                    queryClient.invalidateQueries({ queryKey: ["admin"] }),
-                    queryClient.invalidateQueries({ queryKey: ["brands"] }),
-                    queryClient.invalidateQueries({ queryKey: ["new-arrivals"] }),
-                  ]);
+                  await queryClient.invalidateQueries({ queryKey: ["admin"] });
                   window.location.reload();
                 } catch (err) {
                   setBrandNotice(err instanceof Error ? err.message : "Couldn't add this brand.");
@@ -152,11 +148,7 @@ function AdminPage() {
                             try {
                               await removeBrand({ data: { slug: b.slug } });
                               setBrandNotice(`${b.name} removed from SITA.`);
-                              await Promise.all([
-                                queryClient.invalidateQueries({ queryKey: ["admin"] }),
-                                queryClient.invalidateQueries({ queryKey: ["brands"] }),
-                                queryClient.invalidateQueries({ queryKey: ["new-arrivals"] }),
-                              ]);
+                              await queryClient.invalidateQueries({ queryKey: ["admin"] });
                               window.location.reload();
                             } catch (err) {
                               setBrandNotice(err instanceof Error ? err.message : "Couldn't remove this brand.");

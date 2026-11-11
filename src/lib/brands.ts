@@ -14,6 +14,20 @@ export type Brand = {
   socials: BrandSocial[];
 };
 
+export type StoredBrandOverride = {
+  slug: string;
+  name: string | null;
+  domain: string | null;
+  site: string | null;
+  tagline: string | null;
+  description: string | null;
+  logo: string | null;
+  story: string[] | null;
+  collections: unknown;
+  socials: unknown;
+  is_active: boolean;
+};
+
 export const BRANDS: Brand[] = [
   {
     slug: "naseeji",
@@ -112,6 +126,27 @@ export const BRANDS: Brand[] = [
     ],
   },
 ];
+
+export function mergeEffectiveBrands(overrides: StoredBrandOverride[]): Brand[] {
+  const bySlug = new Map(overrides.map((row) => [row.slug, row]));
+  const builtInSlugs = new Set(BRANDS.map((brand) => brand.slug));
+  const builtIns = BRANDS.filter((brand) => bySlug.get(brand.slug)?.is_active !== false);
+  const added = overrides
+    .filter((row) => row.is_active && !builtInSlugs.has(row.slug))
+    .map((row): Brand => ({
+      slug: row.slug,
+      name: row.name ?? row.slug,
+      domain: row.domain ?? "",
+      site: row.site ?? "",
+      tagline: row.tagline ?? "",
+      description: row.description ?? row.tagline ?? "",
+      logo: row.logo ?? "",
+      story: row.story ?? [],
+      collections: Array.isArray(row.collections) ? (row.collections as BrandCollection[]) : [],
+      socials: Array.isArray(row.socials) ? (row.socials as BrandSocial[]) : [],
+    }));
+  return [...builtIns, ...added];
+}
 
 export function getBrand(slug: string) {
   return BRANDS.find((b) => b.slug === slug);

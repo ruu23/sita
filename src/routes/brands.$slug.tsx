@@ -77,11 +77,13 @@ function BrandPage() {
 
       <div className="border-b border-border">
         <div className="mx-auto flex max-w-7xl flex-col items-center gap-6 px-4 py-8 sm:flex-row sm:justify-between sm:px-6">
-          <img
-            src={brand.logo}
-            alt={`${brand.name} logo`}
-            className="h-12 w-auto max-w-[240px] object-contain mix-blend-multiply sm:h-14"
-          />
+          {brand.logo ? (
+            <img
+              src={brand.logo}
+              alt={`${brand.name} logo`}
+              className="h-12 w-auto max-w-[240px] object-contain mix-blend-multiply sm:h-14"
+            />
+          ) : <span className="wordmark text-xl">{brand.name}</span>}
           <Link
             to="/brands"
             className="label-caps inline-flex items-center gap-2 text-espresso underline-offset-4 hover:text-foreground hover:underline"

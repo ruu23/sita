@@ -159,6 +159,11 @@ function AuthPage() {
               Browse without an account
             </Link>
           </p>
+          <p className="mt-4 text-center">
+            <Link to="/admin-auth" className="text-[10px] text-ivory/75 underline-offset-4 hover:underline">
+              Admin sign in
+            </Link>
+          </p>
         </div>
       </div>
     </main>

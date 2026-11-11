@@ -1,6 +1,6 @@
 import { createClient } from "@supabase/supabase-js";
 import type { Database } from "@/integrations/supabase/types";
-import { BRANDS, type Brand } from "./brands";
+import { BRANDS, mergeEffectiveBrands, type Brand } from "./brands";
 
 function createPublicClient(url: string, key: string) {
   return createClient<Database>(url, key, {
@@ -33,26 +33,5 @@ export async function getEffectiveBrands(url: string, key: string): Promise<Bran
     return BRANDS;
   }
 
-  const overrides = new Map((data ?? []).map((row) => [row.slug, row]));
-  const builtInSlugs = new Set(BRANDS.map((brand) => brand.slug));
-  const builtIns = BRANDS.flatMap((brand) => {
-    const override = overrides.get(brand.slug);
-    return override?.is_active === false ? [] : [brand];
-  });
-  const added = (data ?? [])
-    .filter((row) => row.is_active && !builtInSlugs.has(row.slug))
-    .map((row): Brand => ({
-      slug: row.slug,
-      name: row.name ?? row.slug,
-      domain: row.domain ?? "",
-      site: row.site ?? "",
-      tagline: row.tagline ?? "",
-      description: row.description ?? row.tagline ?? "",
-      logo: row.logo ?? "",
-      story: row.story ?? [],
-      collections: Array.isArray(row.collections) ? row.collections as Brand["collections"] : [],
-      socials: Array.isArray(row.socials) ? row.socials as Brand["socials"] : [],
-    }));
-
-  return [...builtIns, ...added];
+  return mergeEffectiveBrands(data ?? []);
 }

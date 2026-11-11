@@ -10,3 +10,4 @@
 <!-- LOVABLE:END -->
 
 - Use the shared PageIntro and editorial layout utilities for interior pages so headings, spacing, and product grids stay consistent across screen sizes.
+- Resolve the brand catalog by merging built-in entries with the public-readable, admin-managed `sita_brands` table so discovery and product features share one list.

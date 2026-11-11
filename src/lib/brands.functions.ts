@@ -10,6 +10,20 @@ const brandInput = z.object({
   logo: z.string().trim().max(500).optional().or(z.literal("")),
 });
 
+function parseOptionalImage(value: string | undefined) {
+  if (!value) return null;
+  let parsed: URL;
+  try {
+    parsed = new URL(value);
+  } catch {
+    throw new Error("Enter a valid logo image link, or leave it blank.");
+  }
+  if (parsed.protocol !== "https:" || !parsed.hostname.includes(".")) {
+    throw new Error("The logo image link must start with https://.");
+  }
+  return parsed.href;
+}
+
 function parseStoreSite(value: string) {
   const parsed = new URL(value);
   const host = parsed.hostname.toLowerCase();
@@ -19,6 +33,7 @@ function parseStoreSite(value: string) {
     host === "localhost" ||
     host.endsWith(".local") ||
     /^\d{1,3}(\.\d{1,3}){3}$/.test(host) ||
+    Boolean(parsed.port && parsed.port !== "443") ||
     parsed.username ||
     parsed.password
   ) {
@@ -81,7 +96,7 @@ export const addManagedBrand = createServerFn({ method: "POST" })
       site: parsedSite.origin,
       tagline: data.tagline,
       description: data.tagline,
-      logo: data.logo || null,
+      logo: parseOptionalImage(data.logo),
       story: [data.tagline],
       collections: [],
       socials: [{ label: "Website", url: parsedSite.origin }],
