@@ -37,12 +37,14 @@ function BrandsPage() {
                 params={{ slug: b.slug }}
                 className="group grid grid-cols-[minmax(0,1fr)_auto] items-center gap-5 py-8 sm:py-10 md:grid-cols-[160px_minmax(0,1fr)_auto]"
               >
-                <img
-                  src={b.logo}
-                  alt={`${b.name} logo`}
-                  loading="lazy"
-                  className="col-span-2 h-10 w-auto max-w-[150px] object-contain mix-blend-multiply md:col-span-1"
-                />
+                {b.logo ? (
+                  <img
+                    src={b.logo}
+                    alt={`${b.name} logo`}
+                    loading="lazy"
+                    className="col-span-2 h-10 w-auto max-w-[150px] object-contain mix-blend-multiply md:col-span-1"
+                  />
+                ) : <span className="wordmark col-span-2 text-lg md:col-span-1">{b.name}</span>}
                 <span className="min-w-0"><span className="block font-display text-2xl font-semibold transition-colors group-hover:text-espresso sm:text-3xl">{b.name}</span><span className="mt-2 block text-xs leading-relaxed text-muted-foreground sm:text-sm">{b.tagline}</span></span>
                 <ArrowUpRight className="h-5 w-5 shrink-0 text-espresso" strokeWidth={1.2} />
               </Link>
