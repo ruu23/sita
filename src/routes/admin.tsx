@@ -2,7 +2,9 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState } from "react";
 import { useServerFn } from "@tanstack/react-start";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { getAdminOverview } from "@/lib/admin.functions";
+import { getAdminOverview, deleteShopper } from "@/lib/admin.functions";
+import { supabase } from "@/integrations/supabase/client";
+import { useEffect } from "react";
 import { addManagedBrand, removeManagedBrand } from "@/lib/brands.functions";
 import { PageHeader } from "@/components/PageHeader";
 import { PageIntro } from "@/components/PageIntro";
@@ -30,6 +32,12 @@ function AdminPage() {
   const fetchOverview = useServerFn(getAdminOverview);
   const addBrand = useServerFn(addManagedBrand);
   const removeBrand = useServerFn(removeManagedBrand);
+  const removeUser = useServerFn(deleteShopper);
+  const [meId, setMeId] = useState<string | null>(null);
+  const [userNotice, setUserNotice] = useState<string | null>(null);
+  useEffect(() => {
+    supabase.auth.getUser().then(({ data }) => setMeId(data.user?.id ?? null));
+  }, []);
   const queryClient = useQueryClient();
   const { data, isLoading, error } = useQuery({ queryKey: ["admin"], queryFn: () => fetchOverview(), retry: false });
 
@@ -171,11 +179,12 @@ function AdminPage() {
                 <option value="all">All shoppers</option><option value="confirmed">Confirmed</option><option value="pending">Awaiting email</option><option value="admin">Admins</option>
               </select>
               <span className="col-span-2 self-center text-xs text-muted-foreground">{users.length} of {data.users.length}</span>
+              {userNotice ? <p role="status" className="col-span-2 text-sm text-muted-foreground">{userNotice}</p> : null}
             </div>
             <div className="mt-5 overflow-x-auto border-y border-border bg-background">
               <table className="w-full min-w-[640px] text-left text-xs sm:text-sm">
                 <thead className="label-caps bg-secondary/60 text-muted-foreground">
-                  <tr><th className="px-4 py-4">Email</th><th className="px-4 py-4">Name</th><th className="px-4 py-4">Joined</th><th className="px-4 py-4">Last sign-in</th><th className="px-4 py-4">Status</th></tr>
+                  <tr><th className="px-4 py-4">Email</th><th className="px-4 py-4">Name</th><th className="px-4 py-4">Joined</th><th className="px-4 py-4">Last sign-in</th><th className="px-4 py-4">Status</th><th className="px-4 py-4">Action</th></tr>
                 </thead>
                 <tbody>
                   {users.map((u) => (
@@ -185,6 +194,30 @@ function AdminPage() {
                       <td className="px-4 py-4">{fmt(u.createdAt)}</td>
                       <td className="px-4 py-4">{fmt(u.lastSignIn)}</td>
                       <td className="px-4 py-4">{u.confirmed ? "Confirmed" : "Awaiting email"}</td>
+                      <td className="px-4 py-4">
+                        {u.id === meId ? (
+                          <span className="text-xs text-muted-foreground">You</span>
+                        ) : (
+                          <Button
+                            type="button"
+                            variant="ghost"
+                            className="h-auto px-2 py-1 text-destructive"
+                            onClick={async () => {
+                              if (!window.confirm(`Delete ${u.email}? This can't be undone.`)) return;
+                              setUserNotice(null);
+                              try {
+                                await removeUser({ data: { userId: u.id } });
+                                setUserNotice(`${u.email} was deleted.`);
+                                await queryClient.invalidateQueries({ queryKey: ["admin"] });
+                              } catch (err) {
+                                setUserNotice(err instanceof Error ? err.message : "Couldn't delete this user.");
+                              }
+                            }}
+                          >
+                            Delete
+                          </Button>
+                        )}
+                      </td>
                     </tr>
                   ))}
                 </tbody>
