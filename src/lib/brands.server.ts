@@ -1,6 +1,6 @@
 import { createClient } from "@supabase/supabase-js";
 import type { Database } from "@/integrations/supabase/types";
-import { BRANDS, mergeEffectiveBrands } from "./brands";
+import { BRANDS, mergeEffectiveBrands, type Brand } from "./brands";
 
 function createPublicClient(url: string, key: string) {
   return createClient<Database>(url, key, {

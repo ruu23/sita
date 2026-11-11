@@ -10,7 +10,7 @@ export const Route = createFileRoute("/brands/")({
   head: () => ({
     meta: [
       { title: "The Brands — SITA" },
-      { name: "description", content: "Meet the Egyptian local labels on SITA: Naseeji, Roaia Studio, Frenchee The Label and TGS." },
+      { name: "description", content: "Meet Egyptian local fashion labels and discover their latest collections on SITA." },
       { property: "og:title", content: "The Brands — SITA" },
       { property: "og:description", content: "Egypt's local fashion labels, gathered in one place." },
       { property: "og:type", content: "website" },

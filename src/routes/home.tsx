@@ -13,8 +13,7 @@ export const Route = createFileRoute("/home")({
       { title: "New In — SITA" },
       {
         name: "description",
-        content:
-          "Live new arrivals from Naseeji, Roaia Studio, Frenchee The Label and TGS, gathered in one feed.",
+        content: "Live new arrivals from Egyptian local fashion labels, gathered in one feed.",
       },
       { property: "og:title", content: "New In — SITA" },
       {

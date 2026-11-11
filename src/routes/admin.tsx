@@ -87,6 +87,7 @@ function AdminPage() {
                   setBrandLogo("");
                   setBrandNotice("Brand added to SITA.");
                   await queryClient.invalidateQueries({ queryKey: ["admin"] });
+                  window.location.reload();
                 } catch (err) {
                   setBrandNotice(err instanceof Error ? err.message : "Couldn't add this brand.");
                 } finally {
@@ -148,6 +149,7 @@ function AdminPage() {
                               await removeBrand({ data: { slug: b.slug } });
                               setBrandNotice(`${b.name} removed from SITA.`);
                               await queryClient.invalidateQueries({ queryKey: ["admin"] });
+                              window.location.reload();
                             } catch (err) {
                               setBrandNotice(err instanceof Error ? err.message : "Couldn't remove this brand.");
                             }
