@@ -47,3 +47,24 @@ export const getAdminOverview = createServerFn({ method: "GET" })
 
     return { allowed: true as const, users, brands };
   });
+
+export const deleteShopper = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((input: { userId: string }) => {
+    if (typeof input?.userId !== "string" || !/^[0-9a-f-]{36}$/i.test(input.userId)) {
+      throw new Error("Invalid user.");
+    }
+    return input;
+  })
+  .handler(async ({ data, context }) => {
+    const { data: isAdmin, error: roleError } = await context.supabase.rpc("has_role", {
+      _user_id: context.userId,
+      _role: "admin",
+    });
+    if (roleError || !isAdmin) throw new Error("Only SITA admins can delete users.");
+    if (data.userId === context.userId) throw new Error("You can't delete your own account here.");
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const { error } = await supabaseAdmin.auth.admin.deleteUser(data.userId);
+    if (error) throw new Error("Couldn't delete this user. Please try again.");
+    return { ok: true as const };
+  });
