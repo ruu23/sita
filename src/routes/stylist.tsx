@@ -30,16 +30,20 @@ const IDEAS = [
   "Casual brunch, under 3000 EGP",
 ];
 
+const REFINE = ["Make it cheaper", "More modest", "Dressier", "More casual", "Different colors"];
+
 function StylistPage() {
   const recommend = useServerFn(recommendOutfit);
   const [prompt, setPrompt] = useState("");
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState<StylistResponse | null>(null);
+  const [lastPrompt, setLastPrompt] = useState("");
 
   async function run(text: string) {
     const value = text.trim();
     if (value.length < 3 || loading) return;
     setPrompt(value);
+    setLastPrompt(value);
     setLoading(true);
     setResult(null);
     try {
@@ -96,9 +100,14 @@ function StylistPage() {
         </section>
 
         {loading && (
-          <p className="mt-12 text-center text-sm text-muted-foreground">
-            Browsing Naseeji, Roaia, Frenchee and TGS for you…
-          </p>
+          <section className="mt-12" aria-live="polite">
+            <p className="text-center text-sm text-muted-foreground">Browsing every SITA brand for your look…</p>
+            <div className="editorial-grid mt-10">
+              {[0, 1, 2, 3].map((i) => (
+                <div key={i} className="aspect-[3/4] animate-pulse bg-secondary" />
+              ))}
+            </div>
+          </section>
         )}
 
         {result && !result.ok && (
@@ -110,12 +119,31 @@ function StylistPage() {
             <div className="mx-auto max-w-2xl text-center">
               <h2 className="font-display text-3xl">{result.title}</h2>
               {result.note && <p className="mt-2 text-sm text-muted-foreground">{result.note}</p>}
+              <p className="label-caps mt-4 text-espresso">
+                {result.items.length} pieces · Total{" "}
+                {result.items.reduce((sum, i) => sum + Math.round(Number(i.product.price) || 0), 0)} EGP
+              </p>
+              <div className="mt-6 flex flex-wrap justify-center gap-2">
+                {REFINE.map((r) => (
+                  <Button
+                    key={r}
+                    variant="outline"
+                    size="sm"
+                    disabled={loading}
+                    onClick={() => run(`${lastPrompt}. ${r}`.slice(0, 500))}
+                    className="rounded-full text-xs shadow-none"
+                  >
+                    {r}
+                  </Button>
+                ))}
+              </div>
             </div>
             <div className="editorial-grid mt-10">
-              {result.items.map(({ product, reason }) => (
+              {result.items.map(({ product, reason, role }) => (
                 <div key={product.id}>
                   <ProductCard product={product} />
-                  <p className="mt-2 text-xs italic text-muted-foreground">{reason}</p>
+                  {role && <p className="label-caps mt-1 text-foreground">{role}</p>}
+                  <p className="mt-1 text-xs italic text-muted-foreground">{reason}</p>
                 </div>
               ))}
             </div>
