@@ -2,7 +2,7 @@ import { createOpenAI } from "@ai-sdk/openai";
 import { streamText } from "ai";
 import type { Product } from "./brands";
 
-export type StylistPick = { id: string; reason: string };
+export type StylistPick = { id: string; reason: string; role?: string };
 export type StylistResult = { title: string; note: string; picks: StylistPick[] };
 
 function createRunIdFetch() {
@@ -37,8 +37,9 @@ export async function recommendFromCatalog(
     maxRetries: 0,
     system:
       "You are SITA's stylist for Egyptian local fashion brands. Recommend pieces ONLY from the catalog given (format: id | brand | title | price). " +
-      "Build one cohesive look of 3 to 6 pieces, mixing brands when it suits. Respect any budget, modesty or weather cues. " +
-      'Reply with JSON only, no markdown: {"title": short look name, "note": 1-2 sentence styling advice, "picks": [{"id": exact catalog id, "reason": under 15 words}]}. ' +
+      "Build one cohesive, complete look of 3 to 6 pieces (e.g. top, bottom or dress, outer layer, accessory), never two pieces filling the same role, mixing brands when it suits. " +
+      "Strictly respect any budget (total of all picks must stay under it), colors, modesty, weather and occasion cues. " +
+      'Reply with JSON only, no markdown: {"title": short look name, "note": 1-2 sentence styling advice, "picks": [{"id": exact catalog id, "role": one or two words like Top, Bottom, Dress, Layer, Accessory, "reason": under 15 words}]}. ' +
       "Reply in the same language the shopper writes in.",
     prompt: `Shopper request: ${prompt}\n\nCatalog:\n${list}`,
     providerOptions: {
@@ -60,6 +61,6 @@ export async function recommendFromCatalog(
   return {
     title: String(parsed.title ?? "Your look"),
     note: String(parsed.note ?? ""),
-    picks: (parsed.picks ?? []).filter((p) => ids.has(p.id)),
+    picks: (parsed.picks ?? []).filter((p, i, all) => ids.has(p.id) && all.findIndex((q) => q.id === p.id) === i),
   };
 }
