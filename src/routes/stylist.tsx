@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { useState } from "react";
-import { Sparkles } from "lucide-react";
+import { ArrowUpRight, Sparkles } from "lucide-react";
 import { recommendOutfit, type StylistResponse } from "@/lib/stylist.functions";
 import { ProductCard } from "@/components/ProductCard";
 import { BottomNav } from "@/components/BottomNav";
@@ -24,10 +24,10 @@ export const Route = createFileRoute("/stylist")({
 });
 
 const IDEAS = [
-  "Beach wedding in El Gouna",
-  "Gallery opening night in Zamalek",
-  "Modest linen layers for summer",
-  "Casual brunch, under 3000 EGP",
+  { label: "Beach wedding", detail: "El Gouna · sunset", prompt: "Beach wedding in El Gouna" },
+  { label: "Gallery opening", detail: "Zamalek · evening", prompt: "Gallery opening night in Zamalek" },
+  { label: "Linen layers", detail: "Modest · summer", prompt: "Modest linen layers for summer" },
+  { label: "Weekend brunch", detail: "Easy · under 3000 EGP", prompt: "Casual brunch, under 3000 EGP" },
 ];
 
 function StylistPage() {
@@ -54,51 +54,75 @@ function StylistPage() {
   return (
     <div className="min-h-screen pb-24 md:pb-10">
       <PageHeader title="Stylist" />
-      <main className="editorial-container py-12 sm:py-16">
-        <section className="mx-auto max-w-2xl text-center">
-          <PageIntro title="AI Stylist" eyebrow="The SITA edit" />
-          <form
-            className="mt-6 flex flex-col gap-3"
-            onSubmit={(e) => {
-              e.preventDefault();
-              run(prompt);
-            }}
-          >
-            <input
-              aria-label="Outfit or occasion"
-              value={prompt}
-              onChange={(e) => setPrompt(e.target.value)}
-              maxLength={500}
-              placeholder="e.g. Engagement party, elegant but comfortable"
-              className="min-w-0 rounded-full border border-border bg-secondary/60 px-5 py-4 text-sm outline-none focus:border-foreground"
-            />
-            <Button
-              disabled={loading || prompt.trim().length < 3}
-              className="mx-auto h-12 rounded-full px-9 font-display text-base shadow-none"
+      <main className="editorial-container py-10 sm:py-14">
+        <PageIntro title="AI Stylist" eyebrow="The SITA edit">
+          A considered look, drawn from Egypt’s local labels.
+        </PageIntro>
+
+        <section className="mx-auto grid max-w-6xl gap-12 border-y border-border py-8 sm:py-10 lg:grid-cols-[minmax(0,1.2fr)_minmax(17rem,0.8fr)] lg:gap-20 lg:py-12">
+          <div>
+            <p className="label-caps text-muted-foreground">01 / Your occasion</p>
+            <h2 className="mt-3 font-display text-2xl sm:text-3xl">What are you dressing for?</h2>
+            <form
+              className="mt-6"
+              onSubmit={(e) => {
+                e.preventDefault();
+                run(prompt);
+              }}
             >
-              <Sparkles className="h-4 w-4" strokeWidth={1.4} />
-              {loading ? "Styling…" : "Style me"}
-            </Button>
-          </form>
-          <div className="mt-4 flex flex-wrap justify-center gap-2">
-            {IDEAS.map((i) => (
-              <Button
-                variant="ghost"
-                key={i}
-                onClick={() => run(i)}
-                disabled={loading}
-                className="h-auto whitespace-normal rounded-none border-b border-border px-1 py-2 text-xs text-muted-foreground hover:bg-transparent hover:text-foreground"
-              >
-                {i}
-              </Button>
-            ))}
+              <label htmlFor="stylist-prompt" className="sr-only">Outfit or occasion</label>
+              <textarea
+                id="stylist-prompt"
+                value={prompt}
+                onChange={(e) => setPrompt(e.target.value)}
+                maxLength={500}
+                rows={4}
+                placeholder="Tell us the occasion, mood, weather, or what you’d love to wear…"
+                className="min-h-32 w-full resize-y border border-border bg-secondary/40 px-4 py-4 text-sm leading-relaxed outline-none transition-colors placeholder:text-muted-foreground focus:border-foreground sm:px-5"
+              />
+              <div className="mt-3 flex flex-wrap items-center justify-between gap-3">
+                <span className="text-xs text-muted-foreground">{prompt.length}/500</span>
+                <Button
+                  disabled={loading || prompt.trim().length < 3}
+                  className="h-11 rounded-full px-7 font-display text-base shadow-none"
+                >
+                  <Sparkles className="h-4 w-4" strokeWidth={1.4} />
+                  {loading ? "Putting your look together…" : "Find my look"}
+                </Button>
+              </div>
+            </form>
+          </div>
+
+          <div className="lg:border-l lg:border-border lg:pl-10">
+            <p className="label-caps text-muted-foreground">02 / Or begin with</p>
+            <div className="mt-3 divide-y divide-border border-y border-border">
+              {IDEAS.map((idea, index) => (
+                <Button
+                  variant="ghost"
+                  key={idea.label}
+                  onClick={() => run(idea.prompt)}
+                  disabled={loading}
+                  className="group h-auto w-full justify-between rounded-none px-0 py-4 text-left hover:bg-transparent"
+                >
+                  <span className="flex min-w-0 items-baseline gap-4">
+                    <span className="label-caps text-muted-foreground">0{index + 1}</span>
+                    <span className="min-w-0">
+                      <span className="block font-display text-lg text-foreground">{idea.label}</span>
+                      <span className="mt-1 block text-xs text-muted-foreground">{idea.detail}</span>
+                    </span>
+                  </span>
+                  <ArrowUpRight className="h-4 w-4 shrink-0 text-muted-foreground transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" strokeWidth={1.4} />
+                </Button>
+              ))}
+            </div>
           </div>
         </section>
 
         {loading && (
-          <p className="mt-12 text-center text-sm text-muted-foreground">
-            Browsing Naseeji, Roaia, Frenchee and TGS for you…
-          </p>
+          <div className="mx-auto mt-12 flex max-w-xl items-center justify-center gap-3 border-y border-border py-5 text-sm text-muted-foreground" role="status" aria-live="polite">
+            <Sparkles className="h-4 w-4 animate-pulse text-espresso" strokeWidth={1.4} />
+            <span>Finding pieces across Egypt’s local labels…</span>
+          </div>
         )}
 
         {result && !result.ok && (
