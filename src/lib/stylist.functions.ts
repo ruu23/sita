@@ -3,7 +3,7 @@ import { z } from "zod";
 import type { Product } from "./brands";
 
 export type StylistResponse =
-  | { ok: true; title: string; note: string; items: { product: Product; reason: string; role?: string }[] }
+  | { ok: true; title: string; note: string; items: { product: Product; reason: string; role: string }[] }
   | { ok: false; error: string };
 
 export const recommendOutfit = createServerFn({ method: "POST" })
@@ -21,7 +21,7 @@ export const recommendOutfit = createServerFn({ method: "POST" })
       const { recommendFromCatalog } = await import("./stylist.server");
       const r = await recommendFromCatalog(data.prompt, catalog, apiKey);
       const byId = new Map(catalog.map((p) => [p.id, p]));
-      const items = r.picks.map((p) => ({ product: byId.get(p.id)!, reason: p.reason, role: p.role }));
+      const items = r.picks.map((p) => ({ product: byId.get(p.id)!, reason: p.reason, role: p.role ?? "" }));
       if (!items.length) return { ok: false, error: "No matching pieces found. Try describing it differently." };
       return { ok: true, title: r.title, note: r.note, items };
     } catch (e) {
