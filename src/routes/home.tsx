@@ -143,7 +143,7 @@ function Carousel({ items }: { items: Product[] }) {
 
 function HomePage() {
   const { products, brands } = Route.useLoaderData();
-  const productsSectionRef = useRef<HTMLElement>(null);
+  const brandProductsRef = useRef<HTMLDivElement>(null);
   const [query, setQuery] = useState("");
   const [brand, setBrand] = useState<string | null>(null);
   const [menuOpen, setMenuOpen] = useState(false);
@@ -153,7 +153,7 @@ function HomePage() {
     setMenuOpen(false);
     if (slug) {
       requestAnimationFrame(() =>
-        productsSectionRef.current?.scrollIntoView({ behavior: "smooth", block: "start" }),
+        brandProductsRef.current?.scrollIntoView({ behavior: "smooth", block: "start" }),
       );
     }
   }
@@ -243,7 +243,7 @@ function HomePage() {
 
       {!brand ? <Carousel items={products.slice(0, 3)} /> : null}
 
-      <section ref={productsSectionRef} className="mx-auto max-w-7xl scroll-mt-20 px-4 sm:px-6">
+      <section className="mx-auto max-w-7xl px-4 sm:px-6">
         <div className="py-10 text-center sm:py-14">
           <h2 className="font-display text-3xl font-bold uppercase sm:text-4xl">New In</h2>
           <p className="mt-3 text-sm text-muted-foreground">
@@ -265,7 +265,7 @@ function HomePage() {
         </div>
 
         {brand ? (
-          <div className="pb-8 text-center">
+          <div ref={brandProductsRef} className="scroll-mt-20 pb-8 text-center">
             <Link
               to="/brands/$slug"
               params={{ slug: brand }}
