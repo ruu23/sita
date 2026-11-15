@@ -143,9 +143,20 @@ function Carousel({ items }: { items: Product[] }) {
 
 function HomePage() {
   const { products, brands } = Route.useLoaderData();
+  const productsSectionRef = useRef<HTMLElement>(null);
   const [query, setQuery] = useState("");
   const [brand, setBrand] = useState<string | null>(null);
   const [menuOpen, setMenuOpen] = useState(false);
+
+  function selectBrand(slug: string | null) {
+    setBrand(slug);
+    setMenuOpen(false);
+    if (slug) {
+      requestAnimationFrame(() =>
+        productsSectionRef.current?.scrollIntoView({ behavior: "smooth", block: "start" }),
+      );
+    }
+  }
 
   const q = query.trim().toLowerCase();
   const filtered = products.filter(
@@ -172,7 +183,7 @@ function HomePage() {
 
           <nav className="hidden md:flex md:items-center md:gap-6">
             <button
-              onClick={() => setBrand(null)}
+              onClick={() => selectBrand(null)}
               className={`label-caps transition-colors ${brand === null ? "text-foreground" : "text-muted-foreground hover:text-foreground"}`}
             >
               All brands
@@ -180,7 +191,7 @@ function HomePage() {
             {brands.map((b) => (
               <button
                 key={b.slug}
-                onClick={() => setBrand(b.slug)}
+                onClick={() => selectBrand(b.slug)}
                 className={`label-caps transition-colors ${brand === b.slug ? "text-foreground" : "text-muted-foreground hover:text-foreground"}`}
               >
                 {b.name}
@@ -208,8 +219,7 @@ function HomePage() {
             <div className="flex flex-wrap gap-x-5 gap-y-3">
               <button
                 onClick={() => {
-                  setBrand(null);
-                  setMenuOpen(false);
+                  selectBrand(null);
                 }}
                 className={`label-caps ${brand === null ? "text-foreground" : "text-muted-foreground"}`}
               >
@@ -219,8 +229,7 @@ function HomePage() {
                 <button
                   key={b.slug}
                   onClick={() => {
-                    setBrand(b.slug);
-                    setMenuOpen(false);
+                    selectBrand(b.slug);
                   }}
                   className={`label-caps ${brand === b.slug ? "text-foreground" : "text-muted-foreground"}`}
                 >
@@ -232,9 +241,9 @@ function HomePage() {
         ) : null}
       </header>
 
-      <Carousel items={products.slice(0, 3)} />
+      {!brand ? <Carousel items={products.slice(0, 3)} /> : null}
 
-      <section className="mx-auto max-w-7xl px-4 sm:px-6">
+      <section ref={productsSectionRef} className="mx-auto max-w-7xl scroll-mt-20 px-4 sm:px-6">
         <div className="py-10 text-center sm:py-14">
           <h2 className="font-display text-3xl font-bold uppercase sm:text-4xl">New In</h2>
           <p className="mt-3 text-sm text-muted-foreground">
