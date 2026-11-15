@@ -8,6 +8,7 @@
 - [x] Brand pages: description, logo, featured pieces
 - [x] Create admin account and verify /admin
 - [x] Temporarily hide AI Stylist from shopper navigation
+- [x] Scroll to selected brand products and hide the home hero carousel
 - [x] Add dedicated admin sign-in and persistent admin-only brand add/remove management
 - [x] Apply responsive SITA visual brief to Splash, Sign Up, and Home
 - [ ] Complete consistent editorial styling for search, wishlist, profile, stylist, brands, and admin
