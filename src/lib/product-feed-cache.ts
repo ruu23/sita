@@ -129,9 +129,6 @@ const workerCacheBackend: CacheBackend = {
   },
 };
 
-export const productFeedCache = createStaleCache<unknown[]>({
-  freshForMs: 5 * 60 * 1000,
-  retainForMs: 7 * 24 * 60 * 60 * 1000,
-  isValid: (value): value is unknown[] => Array.isArray(value),
-  backend: workerCacheBackend,
-});
+export function createWorkerStaleCache<T>(options: Omit<StaleCacheOptions<T>, "backend">) {
+  return createStaleCache({ ...options, backend: workerCacheBackend });
+}

@@ -11,4 +11,5 @@
 - [x] Scroll to selected brand products and hide the home hero carousel
 - [x] Add dedicated admin sign-in and persistent admin-only brand add/remove management
 - [x] Apply responsive SITA visual brief to Splash, Sign Up, and Home
+- [ ] Keep Home products available during temporary Shopify feed outages — in progress
 - [ ] Complete consistent editorial styling for search, wishlist, profile, stylist, brands, and admin
