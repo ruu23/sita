@@ -1,5 +1,6 @@
 import type { Brand, Product } from "./brands";
 import { getEffectiveBrands } from "./brands.server";
+import { createWorkerStaleCache } from "./product-feed-cache";
 
 type ShopifyProduct = {
   id: number;
@@ -11,27 +12,55 @@ type ShopifyProduct = {
   variants?: { price: string; available?: boolean }[];
 };
 
+const productFeedCache = createWorkerStaleCache<Product[]>({
+  freshForMs: 5 * 60 * 1000,
+  retainForMs: 7 * 24 * 60 * 60 * 1000,
+  isValid: (value): value is Product[] =>
+    Array.isArray(value) &&
+    value.length > 0 &&
+    value.every(
+      (item) =>
+        typeof item === "object" &&
+        item !== null &&
+        typeof item.id === "string" &&
+        typeof item.brand === "string" &&
+        typeof item.brandSlug === "string" &&
+        typeof item.title === "string" &&
+        typeof item.price === "string" &&
+        (typeof item.image === "string" || item.image === null) &&
+        typeof item.url === "string" &&
+        typeof item.createdAt === "string",
+    ),
+});
+
 async function fetchBrand(brand: Brand, limit: number, collection?: string): Promise<Product[]> {
-  try {
-    const path = collection ? `/collections/${encodeURIComponent(collection)}` : "";
-    const response = await fetch(`${brand.site}${path}/products.json?limit=${limit}`, {
-      headers: { accept: "application/json", "user-agent": "Mozilla/5.0 SitaBot" },
-    });
-    if (!response.ok) return [];
-    const json = (await response.json()) as { products?: ShopifyProduct[] };
-    return (json.products ?? []).map((product) => ({
-      id: `${brand.slug}-${product.id}`,
-      brand: brand.name,
-      brandSlug: brand.slug,
-      title: product.title,
-      price: product.variants?.[0]?.price ?? "",
-      image: product.images?.[0]?.src ?? null,
-      url: `${brand.site}/products/${product.handle}`,
-      createdAt: product.published_at ?? product.created_at,
-    }));
-  } catch {
-    return [];
-  }
+  const path = collection ? `/collections/${encodeURIComponent(collection)}` : "";
+  const feedUrl = `${brand.site}${path}/products.json?limit=${limit}`;
+  const cacheKey = `${brand.slug}:${feedUrl}`;
+  const products = await productFeedCache.getOrLoad(cacheKey, async () => {
+    try {
+      const response = await fetch(feedUrl, {
+        headers: { accept: "application/json", "user-agent": "Mozilla/5.0 SitaBot" },
+        signal: AbortSignal.timeout(8000),
+      });
+      if (!response.ok) return null;
+      const json = (await response.json()) as { products?: ShopifyProduct[] };
+      if (!Array.isArray(json.products) || json.products.length === 0) return null;
+      return json.products.map((product) => ({
+        id: `${brand.slug}-${product.id}`,
+        brand: brand.name,
+        brandSlug: brand.slug,
+        title: product.title,
+        price: product.variants?.[0]?.price ?? "",
+        image: product.images?.[0]?.src ?? null,
+        url: `${brand.site}/products/${product.handle}`,
+        createdAt: product.published_at ?? product.created_at,
+      }));
+    } catch {
+      return null;
+    }
+  });
+  return products ?? [];
 }
 
 export async function fetchCatalog(url: string, key: string): Promise<Product[]> {

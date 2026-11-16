@@ -279,7 +279,11 @@ function HomePage() {
 
         {filtered.length === 0 ? (
           <p className="py-16 text-center text-sm text-muted-foreground">
-            No pieces match “{query}” yet.
+            {query.trim()
+              ? `No pieces match “${query}” yet.`
+              : brand
+                ? "Pieces from this brand are temporarily unavailable. Please try again shortly."
+                : "New arrivals are temporarily unavailable. Please try again shortly."}
           </p>
         ) : (
           <div className="grid grid-cols-2 gap-x-3 gap-y-10 pb-16 sm:grid-cols-3 sm:gap-x-5 lg:grid-cols-4 lg:gap-x-7 lg:gap-y-14">
